@@ -7,6 +7,8 @@ from django.utils.safestring import mark_safe
 class UsuarioAdmin(admin.ModelAdmin):
     # Campos a serem exibidos na listagem
     list_display = ('nome_completo', 'cpf', 'email', 'telefone', 'perfil', 'data_cadastro', 'foto_thumbnail', 'assinatura_thumbnail')
+    search_fields = ('nome_completo', 'cpf', 'email', 'perfil')
+    list_filter = ('perfil',)
 
     # Função para exibir a miniatura da foto
     def foto_thumbnail(self, obj):
