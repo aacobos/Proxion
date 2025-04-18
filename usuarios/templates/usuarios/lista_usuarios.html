@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Usuários Cadastrados</h2>
+    {% for usuario in usuarios %}
+    <p>{{ usuario.nome_completo }}</p>
+
+    {% if usuario.foto %}
+        <img src="{{ usuario.foto.url }}" style="max-height: 100px;">
+    {% endif %}
+
+    {% if usuario.assinatura %}
+        <img src="{{ usuario.assinatura.url }}" style="max-height: 100px;">
+    {% endif %}
+{% endfor %}
+
+</body>
+</html>
