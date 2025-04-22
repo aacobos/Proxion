@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # Declarando os apps instalados
     'usuarios.apps.UsuariosConfig',
     'clientes.apps.ClientesConfig',
+    'equipamentos.apps.EquipamentosConfig',
 ]
 
 MIDDLEWARE = [
