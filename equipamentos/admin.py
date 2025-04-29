@@ -10,11 +10,13 @@ class CategoriaEquipamentoAdmin(admin.ModelAdmin):
 @admin.register(ParametroEquipamento)
 class ParametroEquipamentoAdmin(admin.ModelAdmin):
     list_display = ['nome', 'gravidade']
+    search_fields = ['nome']
 
 @admin.register(Equipamento)
 class EquipamentoAdmin(admin.ModelAdmin):
     list_display = ['nome', 'numero_serie', 'categoria', 'situacao', 'status', 'cliente']
     readonly_fields = ['parametros_herdados_da_categoria']
+    search_fields = ['nome']
 
     # Oculta o campo parametros_personalizados do formulário
     def get_fields(self, request, obj=None):
@@ -42,5 +44,6 @@ class EquipamentoAdmin(admin.ModelAdmin):
         if obj.categoria and (not change or obj.categoria != categoria_antiga):
             parametros_da_categoria = obj.categoria.parametros.all()
             obj.parametros_personalizados.set(parametros_da_categoria)
+
 
 

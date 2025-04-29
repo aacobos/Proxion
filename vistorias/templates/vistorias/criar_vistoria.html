@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  {% block content %}
+  <h1>Criar Nova Vistoria</h1>
+
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar Vistoria</button>
+  </form>
+
+  <a href="{% url 'vistorias:lista_vistorias' %}">Voltar para lista de vistorias</a>
+{% endblock %}
+</body>
+</html>
+
+

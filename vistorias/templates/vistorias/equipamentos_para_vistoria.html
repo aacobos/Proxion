@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Equipamentos para Vistoria</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        a.button {
+            background-color: #007bff;
+            color: white;
+            padding: 6px 10px;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Equipamentos para Vistoria - {{ vistoria }}</h2>
+
+    <a href="?ver_todos=1">Ver todos</a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nome do Equipamento</th>
+                <th>Categoria</th>
+                <th>Número de Série</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for equipamento in equipamentos %}
+            <tr>
+                <td>{{ equipamento.nome }}</td>
+                <td>{{ equipamento.categoria.nome }}</td>
+                <td>{{ equipamento.numero_serie }}</td>
+                <td>
+                    <a class="button" href="{% url 'vistorias:formulario_vistoria_equipamento' vistoria.id equipamento.id %}">Vistoriar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">Nenhum equipamento disponível para vistoria.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
