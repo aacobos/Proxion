@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Detalhes do Cliente
+{% endblock %}
+
+{% block header %}
+    <h1>Detalhes do Cliente</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Detalhes do Cliente</h2>
+
+    <label>Nome Fantasia:</label>
+    <input type="text" value="{{ cliente.nome_fantasia }}" readonly>
+
+    <label>Razão Social:</label>
+    <input type="text" value="{{ cliente.razao_social }}" readonly>
+
+    <label>CNPJ:</label>
+    <input type="text" value="{{ cliente.cnpj }}" readonly>
+
+    <label>Telefone:</label>
+    <input type="text" value="{{ cliente.telefone }}" readonly>
+
+    <label>Email:</label>
+    <input type="text" value="{{ cliente.email }}" readonly>
+
+    <label>Endereço:</label>
+    <textarea readonly>{{ cliente.endereco }}</textarea>
+
+    <label>Sigla do Cliente:</label>
+    <input type="text" value="{{ cliente.sigla }}" readonly>
+
+    <label>Unidade:</label>
+    <input type="text" value="{{ cliente.unidade }}" readonly>
+
+    <label>Sub-local:</label>
+    <input type="text" value="{{ cliente.sub_local }}" readonly>
+
+    <label>Logo:</label><br>
+    {% if cliente.logo %}
+        <img src="{{ cliente.logo.url }}" alt="Logo" class="preview-img">
+    {% else %}
+        <p>Não enviada.</p>
+    {% endif %}
+
+    <label>Responsável:</label>
+    <input type="text" value="{{ cliente.responsavel }}" readonly>
+
+    <label>Número do Contrato:</label>
+    <input type="text" value="{{ cliente.numero_contrato }}" readonly>
+
+    <label>Data de Início do Contrato:</label>
+    <input type="text" value="{{ cliente.data_inicio_contrato|date:'d/m/Y' }}" readonly>
+
+    <label>Data de Vencimento do Contrato:</label>
+    <input type="text" value="{{ cliente.data_vencimento_contrato|date:'d/m/Y' }}" readonly>
+
+    <label>Data de Cadastro:</label>
+    <input type="text" value="{{ cliente.data_cadastro|date:'d/m/Y H:i' }}" readonly>
+
+    <a href="{% url 'clientes:editar_cliente' cliente.pk %}">
+        <button type="button">Editar</button>
+    </a>
+
+    <form method="POST" action="{% url 'clientes:excluir_cliente' cliente.pk %}" style="margin-top: 10px;">
+        {% csrf_token %}
+        <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este cliente?');" style="background-color: #e74c3c;">Excluir</button>
+    </form>
+
+    <a href="{% url 'clientes:listar_clientes' %}">
+        <button type="button" style="margin-top: 10px;">Voltar</button>
+    </a>
+</div>
+{% endblock %}

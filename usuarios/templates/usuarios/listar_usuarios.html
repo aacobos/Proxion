@@ -11,7 +11,7 @@
 
 
 {% block content %}
-<h1>Usuários Cadastrados</h1>
+<h2>Usuários Cadastrados</h2>
 
 <table border="1" cellspacing="0" cellpadding="8">
     <thead>
@@ -45,4 +45,11 @@
         {% endfor %}
     </tbody>
 </table>
+
+<br><hr>
+<div>
+    <a href="{% url 'usuarios:cadastrar_usuario' %}" class="btn btn-primary mb-3">Cadastrar Usuario</a>
+    <a href="{% url 'core:dashboard' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
+</div>
+
 {% endblock %}

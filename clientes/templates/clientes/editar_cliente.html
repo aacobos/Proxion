@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Editar Cliente
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Editar Cliente</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="id_nome_fantasia">Nome Fantasia:</label>
+        {{ form.nome_fantasia }}
+
+        <label for="id_razao_social">Razão Social:</label>
+        {{ form.razao_social }}
+
+        <label for="id_cnpj">CNPJ:</label>
+        {{ form.cnpj }}
+
+        <label for="id_telefone">Telefone:</label>
+        {{ form.telefone }}
+
+        <label for="id_email">Email:</label>
+        {{ form.email }}
+
+        <label for="id_endereco">Endereço:</label>
+        {{ form.endereco }}
+
+        <label for="id_sigla">Sigla do Cliente:</label>
+        {{ form.sigla }}
+
+        <label for="id_unidade">Unidade:</label>
+        {{ form.unidade }}
+
+        <label for="id_sub_local">Sub-local:</label>
+        {{ form.sub_local }}        
+
+        <label for="id_logo">Logo atual:</label><br>
+        {% if form.instance.logo %}
+            <img src="{{ form.instance.logo.url }}" alt="Logo" class="preview-img">
+        {% else %}
+            <p>Nenhuma logo cadastrada.</p>
+        {% endif %}
+        {{ form.logo }}
+
+        <label for="id_responsavel">Responsável:</label>
+        {{ form.responsavel }}
+
+        <label for="id_numero_contrato">Número do Contrato:</label>
+        {{ form.numero_contrato }}
+
+        <label for="id_data_inicio_contrato">Data de Início do Contrato:</label>
+        {{ form.data_inicio_contrato }}
+
+        <label for="id_data_vencimento_contrato">Data de Vencimento do Contrato:</label>
+        {{ form.data_vencimento_contrato }}
+
+        <button type="submit">Salvar alterações</button>
+    </form>
+</div>
+{% endblock %}

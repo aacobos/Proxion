@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Lista de Clientes
+{% endblock %}
+
+{% block header %}
+    <h1>Lista de Clientes</h1>
+{% endblock %}
+
+{% block content %}
+<h2>Clientes Cadastrados</h2>
+
+<table border="1" cellspacing="0" cellpadding="8">
+    <thead>
+        <tr>
+            <th>Nome Fantasia</th>
+            <th>CNPJ</th>
+            <th>Responsável</th>
+            <th>Telefone</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cliente in clientes %}
+        <tr>
+            <td><a href="{% url 'clientes:detalhes_cliente' cliente.id %}">{{ cliente.nome_fantasia }}</a></td>
+            <td>{{ cliente.cnpj }}</td>
+            <td>{{ cliente.responsavel }}</td>
+            <td>{{ cliente.telefone }}</td>
+            <td>
+                <a href="{% url 'clientes:editar_cliente' cliente.id %}">Editar</a>
+                <form method="POST" action="{% url 'clientes:excluir_cliente' cliente.id %}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este cliente?');">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none;border:none;color:blue;cursor:pointer;">Excluir</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">Nenhum cliente cadastrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<br><hr>
+<div>
+    <a href="{% url 'clientes:cadastrar_cliente' %}" class="btn btn-primary mb-3">Cadastrar Cliente</a>
+    <a href="{% url 'core:dashboard' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
+</div>
+
+{% endblock %}
