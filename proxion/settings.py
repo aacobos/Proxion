@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'clientes.apps.ClientesConfig',
     'equipamentos.apps.EquipamentosConfig',
     'vistorias.apps.VistoriasConfig',
+    'core.apps.CoreConfig',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,7 @@ import os
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Definindo a URL de login
+LOGIN_URL = '/login/'

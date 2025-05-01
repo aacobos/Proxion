@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Bem-vindo ao Dashboard</h2>
+<p>Olá, {{ request.user.username }}!</p>
+
+<br><hr>
+<div>
+    <h3>Páginas relacionadas aos Usuários</h3>
+    <ul>
+        <li><a href="{% url 'usuarios:listar_usuarios' %}">Listar usuários</a></li>
+        <li><a href="{% url 'usuarios:cadastrar_usuario' %}">Cadastrar usuário</a></li>
+    </ul>
+</div>
+
+<br><hr>
+<div>
+    <h3>Páginas relacionadas aos Clientes</h3>
+    <ul>
+        <li><a href="{% url 'usuarios:listar_usuarios' %}">Listar usuários</a></li>
+        <li><a href="{% url 'usuarios:cadastrar_usuario' %}">Cadastrar usuário</a></li>
+    </ul>
+</div>
+
+
+<br><hr>
+<div>
+    <a href="{% url 'core:logout' %}">Sair</a>
+</div>
+
+{% endblock %}
+
