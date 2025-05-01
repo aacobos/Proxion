@@ -1,0 +1,31 @@
+<!-- templates/base.html -->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Painel de Administração{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Estilo básico (você pode adaptar para Tailwind, Bootstrap ou outro) -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {% block extrahead %}{% endblock %}
+</head>
+<body>
+    <header>
+        {% block header %}
+            <h1>Sistema de Gestão de Vistorias</h1>
+        {% endblock %}
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        &copy; {{ now|default:"2025" }} Proxion - Todos os direitos reservados
+    </footer>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Lista de Usuários
+{% endblock%}
+
+
+{% block header %}
+    <h1>Lista de Usuários</h1>
+{% endblock %}
+
+
+{% block content %}
+<h1>Usuários Cadastrados</h1>
+
+<table border="1" cellspacing="0" cellpadding="8">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>CPF</th>
+            <th>Email</th>
+            <th>Perfil</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for usuario in usuarios %}
+        <tr>
+            <td><a href="{% url 'usuarios:detalhes_usuario' usuario.id %}">{{ usuario.nome_completo }}</a></td>
+            <td>{{ usuario.cpf }}</td>
+            <td>{{ usuario.email }}</td>
+            <td>{{ usuario.get_perfil_display }}</td>
+            <td>
+                <a href="{% url 'usuarios:editar_usuario' usuario.id %}">Editar</a>
+                <form method="POST" action="{% url 'usuarios:excluir_usuario' usuario.id %}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none;border:none;color:blue;cursor:pointer;">Excluir</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5">Nenhum usuário cadastrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

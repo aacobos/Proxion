@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Cadastrar usuário
+{% endblock %}
+
+{% block header %}
+    <h1>Cadastrar Novo Usuário</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Cadastrar Novo Usuário</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_nome_completo">Nome completo:</label>
+            {{ form.nome_completo }}
+        </div>
+        <div class="form-group">
+            <label for="id_cpf">CPF:</label>
+            {{ form.cpf }}
+        </div>
+        <div class="form-group">
+            <label for="id_email">Email:</label>
+            {{ form.email }}
+        </div>
+        <div class="form-group">
+            <label for="id_telefone">Telefone:</label>
+            {{ form.telefone }}
+        </div>
+        <div class="form-group">
+            <label for="id_foto">Foto:</label>
+            {{ form.foto }}
+            <br>
+            <img id="previewFoto" class="preview-img" src="#" alt="Pré-visualização da Foto" style="display: none;" />
+        </div>
+        <div class="form-group">
+            <label for="id_assinatura">Assinatura:</label>
+            {{ form.assinatura }}
+            <br>
+            <img id="previewAssinatura" class="preview-img" src="#" alt="Pré-visualização da Assinatura" style="display: none;" />
+        </div>
+        <div class="form-group">
+            <label for="id_perfil">Perfil:</label>
+            {{ form.perfil }}
+        </div>
+        <button type="submit" class="btn">Salvar</button>
+        <a href="{% url 'usuarios:listar_usuarios' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
+    </form>
+</div>
+
+<script>
+document.getElementById("id_foto").addEventListener("change", function(event) {
+    const [file] = event.target.files;
+    if (file) {
+        const img = document.getElementById("previewFoto");
+        img.src = URL.createObjectURL(file);
+        img.style.display = "block";
+    }
+});
+
+document.getElementById("id_assinatura").addEventListener("change", function(event) {
+    const [file] = event.target.files;
+    if (file) {
+        const img = document.getElementById("previewAssinatura");
+        img.src = URL.createObjectURL(file);
+        img.style.display = "block";
+    }
+});
+</script>
+{% endblock %}

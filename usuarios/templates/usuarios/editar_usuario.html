@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Editar usuário
+{% endblock%}
+
+
+{% block content %}
+<div class="form-container">
+    <h2>Editar Usuário</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <label for="id_nome_completo">Nome completo:</label>
+        {{ form.nome_completo }}
+
+        <label for="id_cpf">CPF:</label>
+        {{ form.cpf }}
+
+        <label for="id_email">Email:</label>
+        {{ form.email }}
+
+        <label for="id_telefone">Telefone:</label>
+        {{ form.telefone }}
+
+        <label for="id_foto">Foto atual:</label><br>
+        {% if form.instance.foto %}
+            <img src="{{ form.instance.foto.url }}" alt="Foto" class="preview-img">
+        {% else %}
+            <p>Nenhuma foto cadastrada.</p>
+        {% endif %}
+        {{ form.foto }}
+
+        <label for="id_assinatura">Assinatura atual:</label><br>
+        {% if form.instance.assinatura %}
+            <img src="{{ form.instance.assinatura.url }}" alt="Assinatura" class="preview-img">
+        {% else %}
+            <p>Nenhuma assinatura cadastrada.</p>
+        {% endif %}
+        {{ form.assinatura }}
+
+        <label for="id_perfil">Perfil:</label>
+        {{ form.perfil }}
+
+        <button type="submit">Salvar alterações</button>
+    </form>
+</div>
+{% endblock %}

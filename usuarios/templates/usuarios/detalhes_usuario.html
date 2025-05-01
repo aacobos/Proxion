@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Detalhes do Usuário
+{% endblock %}
+
+{% block header %}
+    <h1>Detalhes do Usuário</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Detalhes do Usuário</h2>
+
+    <label>Nome completo:</label>
+    <input type="text" value="{{ usuario.nome_completo }}" readonly>
+
+    <label>CPF:</label>
+    <input type="text" value="{{ usuario.cpf }}" readonly>
+
+    <label>Email:</label>
+    <input type="email" value="{{ usuario.email }}" readonly>
+
+    <label>Telefone:</label>
+    <input type="text" value="{{ usuario.telefone }}" readonly>
+
+    <label>Foto:</label><br>
+    {% if usuario.foto %}
+        <img src="{{ usuario.foto.url }}" alt="Foto" class="preview-img">
+    {% else %}
+        <p>Não enviada.</p>
+    {% endif %}
+
+    <label>Assinatura:</label><br>
+    {% if usuario.assinatura %}
+        <img src="{{ usuario.assinatura.url }}" alt="Assinatura" class="preview-img">
+    {% else %}
+        <p>Não enviada.</p>
+    {% endif %}
+
+    <label>Perfil:</label>
+    <input type="text" value="{{ usuario.perfil }}" readonly>
+
+    <a href="{% url 'usuarios:editar_usuario' usuario.pk %}">
+        <button type="button">Editar</button>
+    </a>
+
+    <form method="POST" action="{% url 'usuarios:excluir_usuario' usuario.pk %}" style="margin-top: 10px;">
+        {% csrf_token %}
+        <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este usuário?');" style="background-color: #e74c3c;">Excluir</button>
+    </form>
+
+    <a href="{% url 'usuarios:listar_usuarios' %}">
+        <button type="button" style="margin-top: 10px;">Voltar</button>
+    </a>
+</div>
+{% endblock %}
