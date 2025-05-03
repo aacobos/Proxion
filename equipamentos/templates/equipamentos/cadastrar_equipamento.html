@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Cadastrar Equipamento
+{% endblock %}
+
+{% block header %}
+    <h1>Cadastrar Equipamento</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Dados do Equipamento</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_nome">Nome:</label>
+            {{ form.nome }}
+        </div>
+        <div class="form-group">
+            <label for="id_etiqueta">Etiqueta:</label>
+            {{ form.etiqueta }}
+        </div>
+        <div class="form-group">
+            <label for="id_numero_serie">Número de Série:</label>
+            {{ form.numero_serie }}
+        </div>
+        <div class="form-group">
+            <label for="id_codigo_referencia">Código de Referência:</label>
+            {{ form.codigo_referencia }}
+        </div>
+        <div class="form-group">
+            <label for="id_categoria">Categoria:</label>
+            {{ form.categoria }}
+        </div>
+        <div class="form-group">
+            <label for="id_fabricante">Fabricante:</label>
+            {{ form.fabricante }}
+        </div>
+        <div class="form-group">
+            <label for="id_marca">Marca:</label>
+            {{ form.marca }}
+        </div>
+        <div class="form-group">
+            <label for="id_modelo">Modelo:</label>
+            {{ form.modelo }}
+        </div>
+        <div class="form-group">
+            <label for="id_situacao">Situação:</label>
+            {{ form.situacao }}
+        </div>
+        <div class="form-group">
+            <label for="id_status">Status:</label>
+            {{ form.status }}
+        </div>
+        <div class="form-group">
+            <label for="id_data_compra">Data da Compra:</label>
+            {{ form.data_compra }}
+        </div>
+        <div class="form-group">
+            <label for="id_data_garantia">Data da Garantia:</label>
+            {{ form.data_garantia }}
+        </div>
+        <div class="form-group">
+            <label for="id_custo">Custo:</label>
+            {{ form.custo }}
+        </div>
+        <div class="form-group">
+            <label for="id_descricao">Descrição:</label>
+            {{ form.descricao }}
+        </div>
+        <div class="form-group">
+            <label for="id_fornecedores">Fornecedores:</label>
+            {{ form.fornecedores }}
+        </div>
+        <div class="form-group">
+            <label for="id_utilizado_por">Utilizado por:</label>
+            {{ form.utilizado_por }}
+        </div>
+        <div class="form-group">
+            <label for="id_tags">Tags:</label>
+            {{ form.tags }}
+        </div>
+        <div class="form-group">
+            <label for="id_cliente">Cliente:</label>
+            {{ form.cliente }}
+        </div>
+        <div class="form-group">
+            <label for="id_parametros_personalizados">Parâmetros Personalizados:</label>
+            {{ form.parametros_personalizados }}
+        </div>
+        <button type="submit" class="btn">Salvar</button>
+        <a href="{% url 'equipamentos:listar_equipamentos' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
+    </form>
+</div>
+{% endblock %}

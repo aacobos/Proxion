@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Cadastrar Categoria
+{% endblock %}
+
+{% block header %}
+    <h1>Nova Categoria</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <form method="post">
+        {% csrf_token %}
+        
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required>
+
+        <label>Parâmetros:</label>
+        <div class="checkbox-group">
+            {% for parametro in parametros %}
+                <div class="checkbox-item">
+                    <label>
+                        <input type="checkbox" name="parametros" value="{{ parametro.id }}">
+                        {{ parametro.nome }} ({{ parametro.get_gravidade_display }})
+                    </label>
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="submit">Cadastrar</button>
+        <a href="{% url 'equipamentos:listar_categorias' %}">
+            <button type="button">Cancelar</button>
+        </a>
+    </form>
+</div>
+{% endblock %}

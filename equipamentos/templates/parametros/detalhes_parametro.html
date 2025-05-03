@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Detalhes do Parâmetro
+{% endblock %}
+
+{% block header %}
+    <h1>Detalhes do Parâmetro</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Informações do Parâmetro</h2>
+
+    <label>Nome:</label>
+    <input type="text" value="{{ parametro.nome }}" readonly>
+
+    <label>Gravidade:</label>
+    <input type="text" value="{{ parametro.get_gravidade_display }}" readonly>
+
+    <label>Como Avaliar:</label>
+    <textarea readonly>{{ parametro.avaliacao_ajuda }}</textarea>
+
+    <a href="{% url 'equipamentos:editar_parametro' parametro.pk %}">
+        <button type="button">Editar</button>
+    </a>
+
+    <form method="POST" action="{% url 'equipamentos:excluir_parametro' parametro.pk %}" style="margin-top: 10px;">
+        {% csrf_token %}
+        <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este parâmetro?');" style="background-color: #e74c3c;">Excluir</button>
+    </form>
+
+    <a href="{% url 'equipamentos:listar_parametros' %}">
+        <button type="button" style="margin-top: 10px;">Voltar</button>
+    </a>
+</div>
+{% endblock %}

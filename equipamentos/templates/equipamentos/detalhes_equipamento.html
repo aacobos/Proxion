@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Detalhes do Equipamento
+{% endblock %}
+
+{% block header %}
+    <h1>Detalhes do Equipamento</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Informações do Equipamento</h2>
+
+    <label>Nome:</label>
+    <input type="text" value="{{ equipamento.nome }}" readonly>
+
+    <label>Etiqueta:</label>
+    <input type="text" value="{{ equipamento.etiqueta }}" readonly>
+
+    <label>Número de Série:</label>
+    <input type="text" value="{{ equipamento.numero_serie }}" readonly>
+
+    <label>Código de Referência:</label>
+    <input type="text" value="{{ equipamento.codigo_referencia }}" readonly>
+
+    <label>Categoria:</label>
+    <input type="text" value="{{ equipamento.categoria }}" readonly>
+
+    <label>Fabricante:</label>
+    <input type="text" value="{{ equipamento.fabricante }}" readonly>
+
+    <label>Marca:</label>
+    <input type="text" value="{{ equipamento.marca }}" readonly>
+
+    <label>Modelo:</label>
+    <input type="text" value="{{ equipamento.modelo }}" readonly>
+
+    <label>Situação:</label>
+    <input type="text" value="{{ equipamento.get_situacao_display }}" readonly>
+
+    <label>Status:</label>
+    <input type="text" value="{{ equipamento.get_status_display }}" readonly>
+
+    <label>Data de Compra:</label>
+    <input type="text" value="{{ equipamento.data_compra|date:'d/m/Y' }}" readonly>
+
+    <label>Garantia até:</label>
+    <input type="text" value="{{ equipamento.data_garantia|date:'d/m/Y' }}" readonly>
+
+    <label>Custo:</label>
+    <input type="text" value="R$ {{ equipamento.custo }}" readonly>
+
+    <label>Descrição:</label>
+    <textarea readonly>{{ equipamento.descricao }}</textarea>
+
+    <label>Fornecedores:</label>
+    <input type="text" value="{{ equipamento.fornecedores }}" readonly>
+
+    <label>Utilizado por:</label>
+    <input type="text" value="{{ equipamento.utilizado_por }}" readonly>
+
+    <label>Tags:</label>
+    <input type="text" value="{{ equipamento.tags }}" readonly>
+
+    <label>Cliente:</label>
+    <input type="text" value="{{ equipamento.cliente }}" readonly>
+
+    <label>Cadastrado por:</label>
+    <input type="text" value="{{ equipamento.cadastrado_por }}" readonly>
+
+    <label>Data de Cadastro:</label>
+    <input type="text" value="{{ equipamento.cadastrado_em|date:'d/m/Y H:i' }}" readonly>
+
+    <label>Última Alteração por:</label>
+    <input type="text" value="{{ equipamento.alterado_por }}" readonly>
+
+    <label>Data da Última Alteração:</label>
+    <input type="text" value="{{ equipamento.alterado_em|date:'d/m/Y H:i' }}" readonly>
+
+    <label>Parâmetros Personalizados:</label>
+    {% if equipamento.parametros_personalizados.all %}
+        <ul>
+        {% for parametro in equipamento.parametros_personalizados.all %}
+            <li>{{ parametro.nome }} ({{ parametro.get_gravidade_display }})</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum parâmetro personalizado.</p>
+    {% endif %}
+
+    <a href="{% url 'equipamentos:editar_equipamento' equipamento.pk %}">
+        <button type="button">Editar</button>
+    </a>
+
+    <form method="POST" action="{% url 'equipamentos:excluir_equipamento' equipamento.pk %}" style="margin-top: 10px;">
+        {% csrf_token %}
+        <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este equipamento?');" style="background-color: #e74c3c;">Excluir</button>
+    </form>
+
+    <a href="{% url 'equipamentos:listar_equipamentos' %}">
+        <button type="button" style="margin-top: 10px;">Voltar</button>
+    </a>
+</div>
+{% endblock %}

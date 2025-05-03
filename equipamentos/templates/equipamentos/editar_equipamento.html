@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Editar Equipamento
+{% endblock %}
+
+{% block header %}
+    <h1>Editar Equipamento</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Editar Equipamento</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Salvar Alterações</button>
+        <a href="{% url 'equipamentos:listar_equipamentos' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Editar Categoria
+{% endblock %}
+
+{% block header %}
+    <h1>Editar Categoria</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <form method="post">
+        {% csrf_token %}
+
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" value="{{ categoria.nome }}" required>
+
+        <fieldset>
+            <legend>Parâmetros Personalizados</legend>
+            {% for parametro in parametros %}
+                <div style="margin-bottom: 5px;">
+                    <label>
+                        <input type="checkbox" name="parametros" value="{{ parametro.id }}"
+                               {% if parametro in categoria.parametros.all %}checked{% endif %}>
+                        {{ parametro.nome }} ({{ parametro.get_gravidade_display }})
+                    </label>
+                </div>
+            {% endfor %}
+        </fieldset>
+
+        <button type="submit" class="btn">Salvar</button>
+        <a href="{% url 'equipamentos:listar_categorias' %}">
+            <button type="button" class="btn">Cancelar</button>
+        </a>
+    </form>
+</div>
+{% endblock %}

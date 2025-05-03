@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Lista de Equipamentos
+{% endblock %}
+
+{% block header %}
+    <h1>Lista de Equipamentos</h1>
+{% endblock %}
+
+{% block content %}
+<h2>Equipamentos Cadastrados</h2>
+
+<table border="1" cellspacing="0" cellpadding="8">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Número de Série</th>
+            <th>Categoria</th>
+            <th>Status</th>
+            <th>Cliente</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for equipamento in equipamentos %}
+        <tr>
+            <td><a href="{% url 'equipamentos:detalhes_equipamento' equipamento.id %}">{{ equipamento.nome }}</a></td>
+            <td>{{ equipamento.numero_serie }}</td>
+            <td>{{ equipamento.categoria }}</td>
+            <td>{{ equipamento.get_status_display }}</td>
+            <td>{{ equipamento.cliente.nome_fantasia }}</td>
+            <td>
+                <a href="{% url 'equipamentos:editar_equipamento' equipamento.id %}">Editar</a>
+                <form method="POST" action="{% url 'equipamentos:excluir_equipamento' equipamento.id %}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este equipamento?');">
+                    {% csrf_token %}
+                    <button type="submit" style="background:none;border:none;color:blue;cursor:pointer;">Excluir</button>
+                </form>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">Nenhum equipamento cadastrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<br><hr>
+<div>
+    <a href="{% url 'equipamentos:cadastrar_equipamento' %}" class="btn btn-primary mb-3">Cadastrar Equipamento</a>
+    <a href="{% url 'core:dashboard' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
+</div>
+
+{% endblock %}

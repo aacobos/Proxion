@@ -14,6 +14,12 @@ class ParametroEquipamento(models.Model):
     )
     gravidade = models.CharField(max_length=10, choices=GRAVIDADES)
 
+    avaliacao_ajuda = models.TextField(
+        blank=True,
+        verbose_name="Como avaliar",
+        help_text="Descreva como o analista deve avaliar este parâmetro."
+    )
+
     def __str__(self):
         return f"{self.nome} ({self.get_gravidade_display()})"
 

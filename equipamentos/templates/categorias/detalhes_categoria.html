@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Detalhes da Categoria
+{% endblock %}
+
+{% block header %}
+    <h1>Detalhes da Categoria</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Informações da Categoria</h2>
+
+    <label>Nome:</label>
+    <input type="text" value="{{ categoria.nome }}" readonly>
+
+    <label>Parâmetros:</label>
+    {% if categoria.parametros.all %}
+        <ul>
+        {% for parametro in categoria.parametros.all %}
+            <li>{{ parametro.nome }} ({{ parametro.get_gravidade_display }})</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum parâmetro associado.</p>
+    {% endif %}
+
+    <a href="{% url 'equipamentos:editar_categoria' categoria.pk %}">
+        <button type="button">Editar</button>
+    </a>
+
+    <a href="{% url 'equipamentos:listar_categorias' %}">
+        <button type="button" style="margin-top: 10px;">Voltar</button>
+    </a>
+</div>
+{% endblock %}
