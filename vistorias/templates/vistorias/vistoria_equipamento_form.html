@@ -1,55 +1,50 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Vistoria do Equipamento</title>
-</head>
-<body>
-    <h2>Vistoria do Equipamento: {{ equipamento.nome }}</h2>
+{% extends 'base.html' %}
+{% load static %}
 
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Avaliação de Equipamento
+{% endblock %}
+
+{% block header %}
+    <h1>Vistoria de {{ equipamento.nome }}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
     <form method="post">
         {% csrf_token %}
-
-        <!-- Tabela de parâmetros a serem avaliados -->
-        <table>
-            <thead>
-                <tr>
-                    <th>Parâmetro</th>
-                    <th>Valor Avaliado</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for parametro in parametros %}
-                <tr>
-                    <td>{{ parametro.nome }} ({{ parametro.get_gravidade_display }})</td>
-                    <td>
-                        <select name="parametro_{{ parametro.id }}" required>
-                            <option value="">Selecione...</option>
-                            {% for valor, nome in situacao_choices %}
-                                <option value="{{ valor }}">{{ nome }}</option>
-                            {% endfor %}
-                        </select>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="2">Nenhum parâmetro disponível para este equipamento.</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <br><br>
-
-        <!-- Seção para selecionar o status do equipamento -->
-        <h3>Status do Equipamento</h3>
-        <label for="status">Selecione o Status:</label>
-        <select name="status" id="status" required>
-            <option value="">Selecione...</option>
+        <label>Status Final:</label>
+        <select name="status_final" required>
             {% for valor, nome in status_choices %}
-                <option value="{{ valor }}" {% if valor == equipamento.status %}selected{% endif %}>{{ nome }}</option>
+                <option value="{{ valor }}">{{ nome }}</option>
             {% endfor %}
         </select>
 
-        <button type="submit">Salvar Vistoria</button>
+        <label>Observações Gerais:</label>
+        <textarea name="observacoes"></textarea>
+
+        <h3>Parâmetros</h3>
+        {% for parametro in parametros %}
+            <fieldset>
+                <legend>{{ parametro.nome }}</legend>
+                {% for valor, nome in situacao_choices %}
+                    <label>
+                        <input type="radio" name="parametro_{{ parametro.id }}" value="{{ valor }}" required> {{ nome }}
+                    </label>
+                {% endfor %}
+                <textarea name="observacao_{{ parametro.id }}" placeholder="Observações..."></textarea>
+            </fieldset>
+        {% endfor %}
+
+        <button type="submit">Salvar</button>
     </form>
 
-</body>
-</html>
+    <a href="{% url 'vistorias:equipamentos_para_vistoria' vistoria.id %}">
+        <button type="button" style="margin-top: 10px;">Voltar</button>
+    </a>
+</div>
+{% endblock %}

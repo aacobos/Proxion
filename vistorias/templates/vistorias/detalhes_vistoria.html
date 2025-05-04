@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Detalhes da Vistoria
+{% endblock %}
+
+{% block header %}
+    <h1>Detalhes da Vistoria</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <p><strong>Cliente:</strong> {{ vistoria.cliente }}</p>
+    <p><strong>Unidade:</strong> {{ vistoria.unidade }}</p>
+    <p><strong>Status:</strong> {{ vistoria.get_status_display }}</p>
+    <p><strong>Horário:</strong> {{ vistoria.horario_inicio }} - {{ vistoria.horario_fim }}</p>
+
+    <h2>Equipamentos Vistoriados</h2>
+    <ul>
+        {% for item in equipamentos %}
+            <li>
+                <strong>{{ item.equipamento.nome }}</strong> - {{ item.get_status_final_display }}
+                <ul>
+                    {% for avaliacao in item.avaliacoes.all %}
+                        <li>{{ avaliacao.parametro.nome }}: {{ avaliacao.get_situacao_display }} - {{ avaliacao.observacoes }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'vistorias:listar_vistorias' %}">
+        <button type="button">Voltar</button>
+    </a>
+</div>
+{% endblock %}

@@ -1,23 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  {% block content %}
-  <h1>Criar Nova Vistoria</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-  <form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Salvar Vistoria</button>
-  </form>
-
-  <a href="{% url 'vistorias:lista_vistorias' %}">Voltar para lista de vistorias</a>
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
 {% endblock %}
-</body>
-</html>
 
+{% block title %}
+    Nova Vistoria
+{% endblock %}
 
+{% block header %}
+    <h1>Nova Vistoria</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Criar</button>
+    </form>
+
+    <a href="{% url 'vistorias:listar_vistorias' %}">
+        <button type="button" style="margin-top: 10px;">Voltar</button>
+    </a>
+</div>
+{% endblock %}

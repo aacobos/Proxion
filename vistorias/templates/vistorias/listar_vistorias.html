@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
+
+{% block title %}
+    Lista de Vistorias
+{% endblock %}
+
+{% block header %}
+    <h1>Lista de Vistorias</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <a href="{% url 'vistorias:criar_vistoria' %}">
+        <button type="button">Nova Vistoria</button>
+    </a>
+    <a href="{% url 'core:dashboard' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
+
+    <ul style="margin-top: 20px;">
+        {% for vistoria in vistorias %}
+            <li>
+                <strong>{{ vistoria }}</strong>
+                <br>
+                <a href="{% url 'vistorias:detalhes_vistoria' vistoria.id %}">Detalhes</a>
+                {% if vistoria.status != 'finalizada' %}
+                    | <a href="{% url 'vistorias:equipamentos_para_vistoria' vistoria.id %}">Continuar</a>
+                    | <a href="{% url 'vistorias:finalizar_vistoria' vistoria.id %}">Finalizar</a>
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>Nenhuma vistoria registrada.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

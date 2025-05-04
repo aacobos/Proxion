@@ -1,57 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Equipamentos para Vistoria</title>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        a.button {
-            background-color: #007bff;
-            color: white;
-            padding: 6px 10px;
-            text-decoration: none;
-            border-radius: 4px;
-        }
-    </style>
-</head>
-<body>
-    <h2>Equipamentos para Vistoria - {{ vistoria }}</h2>
+{% extends 'base.html' %}
+{% load static %}
 
-    <a href="?ver_todos=1">Ver todos</a>
+{% block extrahead %}
+    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+{% endblock %}
 
-    <table>
-        <thead>
-            <tr>
-                <th>Nome do Equipamento</th>
-                <th>Categoria</th>
-                <th>Número de Série</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for equipamento in equipamentos %}
-            <tr>
-                <td>{{ equipamento.nome }}</td>
-                <td>{{ equipamento.categoria.nome }}</td>
-                <td>{{ equipamento.numero_serie }}</td>
-                <td>
-                    <a class="button" href="{% url 'vistorias:formulario_vistoria_equipamento' vistoria.id equipamento.id %}">Vistoriar</a>
-                </td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="4">Nenhum equipamento disponível para vistoria.</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</body>
-</html>
+{% block title %}
+    Equipamentos para Vistoria
+{% endblock %}
+
+{% block header %}
+    <h1>Equipamentos para Vistoria</h1>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <p><strong>Vistoria:</strong> {{ vistoria }}</p>
+
+    <ul>
+        {% for equipamento in equipamentos %}
+            <li>
+                {{ equipamento.nome }}
+                - <a href="{% url 'vistorias:vistoria_equipamento_form' vistoria.id equipamento.id %}">Avaliar</a>
+            </li>
+        {% empty %}
+            <li>Todos os equipamentos já foram vistoriados.</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'vistorias:detalhes_vistoria' vistoria.id %}">
+        <button type="button">Ver Resumo</button>
+    </a>
+    <a href="{% url 'vistorias:finalizar_vistoria' vistoria.id %}">
+        <button type="button">Finalizar Vistoria</button>
+    </a>
+    <a href="{% url 'vistorias:listar_vistorias' %}">
+        <button type="button">Voltar</button>
+    </a>
+</div>
+{% endblock %}

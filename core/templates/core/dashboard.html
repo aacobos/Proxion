@@ -3,6 +3,9 @@
 {% block content %}
 <h2>Bem-vindo ao Dashboard</h2>
 <p>Olá, {{ request.user.username }}!</p>
+<div>
+    <a href="{% url 'core:logout' %}">Sair</a>
+</div>
 
 <br><hr>
 <div>
@@ -39,8 +42,15 @@
 
 <br><hr>
 <div>
-    <a href="{% url 'core:logout' %}">Sair</a>
+    <h3>Páginas relacionadas as vistorias</h3>
+    <ul>
+        <li><a href="{% url 'vistorias:listar_vistorias' %}">Listar vistorias</a></li><br>
+        <li><a href="{% url 'vistorias:criar_vistoria' %}">Criar vistoria</a></li><br>
+
+    </ul>
 </div>
+
+
 
 {% endblock %}
 
