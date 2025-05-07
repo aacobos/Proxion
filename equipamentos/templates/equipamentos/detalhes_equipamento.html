@@ -83,16 +83,16 @@
     <label>Data da Última Alteração:</label>
     <input type="text" value="{{ equipamento.alterado_em|date:'d/m/Y H:i' }}" readonly>
 
-    <label>Parâmetros Personalizados:</label>
-    {% if equipamento.parametros_personalizados.all %}
+    <label>Parâmetros da Categoria:</label>
+    {% if equipamento.categoria and equipamento.categoria.parametros.all %}
         <ul>
-        {% for parametro in equipamento.parametros_personalizados.all %}
+        {% for parametro in equipamento.categoria.parametros.all %}
             <li>{{ parametro.nome }} ({{ parametro.get_gravidade_display }})</li>
         {% endfor %}
         </ul>
     {% else %}
-        <p>Nenhum parâmetro personalizado.</p>
-    {% endif %}
+        <p>Nenhum parâmetro definido para esta categoria.</p>
+{% endif %}
 
     <a href="{% url 'equipamentos:editar_equipamento' equipamento.pk %}">
         <button type="button">Editar</button>

@@ -10,6 +10,12 @@ class UsuarioAdmin(admin.ModelAdmin):
     search_fields = ('nome_completo', 'cpf', 'email', 'perfil')
     list_filter = ('perfil',)
 
+    # Campos exibidos no formulário de criação/edição
+    fields = (
+        'user', 'nome_completo', 'cpf', 'email', 'telefone',
+        'perfil', 'foto', 'assinatura'
+    )
+
     # Função para exibir a miniatura da foto
     def foto_thumbnail(self, obj):
         if obj.foto:

@@ -56,12 +56,17 @@
         <label for="id_numero_contrato">Número do Contrato:</label>
         {{ form.numero_contrato }}
 
-        <label for="id_data_inicio_contrato">Data de Início do Contrato:</label>
-        {{ form.data_inicio_contrato }}
-
-        <label for="id_data_vencimento_contrato">Data de Vencimento do Contrato:</label>
-        {{ form.data_vencimento_contrato }}
-
+        <div class="form-group">
+            <label for="id_data_inicio_contrato">Início do Contrato:</label>
+            <input type="date" name="data_inicio_contrato" id="id_data_inicio_contrato" class="form-control" value="{{ form.data_inicio_contrato.value|date:'Y-m-d' }}">
+        </div>
+        
+        <div class="form-group">
+            <label for="id_data_vencimento_contrato">Vencimento do Contrato:</label>
+            <input type="date" name="data_vencimento_contrato" id="id_data_vencimento_contrato" class="form-control" value="{{ form.data_vencimento_contrato.value|date:'Y-m-d' }}">
+        </div>
+    
+        <br>
         <button type="submit">Salvar alterações</button>
     </form>
 </div>

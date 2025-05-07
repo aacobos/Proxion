@@ -24,19 +24,39 @@ def criar_vistoria(request):
 
 def equipamentos_para_vistoria(request, vistoria_id):
     vistoria = get_object_or_404(Vistoria, id=vistoria_id)
+    equipamentos_base = Equipamento.objects.filter(cliente=vistoria.cliente)
 
-    equipamentos = Equipamento.objects.filter(cliente=vistoria.cliente)
-
+    # Verifica se deve ocultar os já avaliados
     if request.GET.get("ver_todos") != "1":
         vistoriados_ids = VistoriaEquipamento.objects.filter(
             vistoria=vistoria
         ).values_list('equipamento_id', flat=True)
-        equipamentos = equipamentos.exclude(id__in=vistoriados_ids)
+        equipamentos_base = equipamentos_base.exclude(id__in=vistoriados_ids)
+
+    equipamentos_data = []
+
+    for equipamento in equipamentos_base:
+        vistoria_equipamento = VistoriaEquipamento.objects.filter(
+            vistoria=vistoria, equipamento=equipamento
+        ).first()
+
+        data_ultima_vistoria = (
+            VistoriaEquipamento.objects.filter(equipamento=equipamento)
+            .order_by('-id').values_list('vistoria__data', flat=True).first()
+        )
+
+        equipamentos_data.append({
+            'id': equipamento.id,
+            'nome': equipamento.nome,
+            'avaliado': vistoria_equipamento is not None,
+            'data_ultima_vistoria': data_ultima_vistoria,
+        })
 
     return render(request, 'vistorias/equipamentos_para_vistoria.html', {
         'vistoria': vistoria,
-        'equipamentos': equipamentos,
+        'equipamentos': equipamentos_data,
     })
+
 
 def vistoria_equipamento_form(request, vistoria_id, equipamento_id):
     vistoria = get_object_or_404(Vistoria, id=vistoria_id)

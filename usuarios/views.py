@@ -1,8 +1,32 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Usuario
 from .forms import UsuarioForm
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.contrib.auth.models import User
 
 # A ideia é exibir uma tabela com os usuários cadastrados no sistema
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+
+            # Garante que o usuário tenha um objeto Usuario
+            try:
+                user.usuario
+            except Usuario.DoesNotExist:
+                Usuario.objects.create(user=user)
+
+            return redirect('usuarios:listar_usuarios')
+        else:
+            messages.error(request, 'Usuário ou senha inválidos.')
+
+    return render(request, 'usuarios/login.html')
+
 def listar_usuarios(request):
     usuarios = Usuario.objects.all()
     return render(request, 'usuarios/listar_usuarios.html', {'usuarios': usuarios})

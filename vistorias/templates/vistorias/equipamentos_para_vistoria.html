@@ -2,38 +2,129 @@
 {% load static %}
 
 {% block extrahead %}
-    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+<link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ccc;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .avaliado {
+        background-color: #d4edda;
+        color: #155724;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: default;
+    }
+
+    .avaliar-btn {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .status-pendente {
+        color: #856404;
+    }
+
+    .status-concluido {
+        color: #28a745;
+        font-weight: bold;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+</style>
 {% endblock %}
 
 {% block title %}
-    Equipamentos para Vistoria
+Equipamentos para Vistoria
 {% endblock %}
 
 {% block header %}
-    <h1>Equipamentos para Vistoria</h1>
+<h1>Equipamentos para Vistoria</h1>
 {% endblock %}
 
 {% block content %}
 <div class="form-container">
     <p><strong>Vistoria:</strong> {{ vistoria }}</p>
 
-    <ul>
-        {% for equipamento in equipamentos %}
-            <li>
-                {{ equipamento.nome }}
-                - <a href="{% url 'vistorias:vistoria_equipamento_form' vistoria.id equipamento.id %}">Avaliar</a>
-            </li>
-        {% empty %}
-            <li>Todos os equipamentos já foram vistoriados.</li>
-        {% endfor %}
-    </ul>
+    {% if equipamentos %}
+    <table>
+        <thead>
+            <tr>
+                <th>Equipamento</th>
+                
+                <th>Status</th>
+                <th>Última Vistoria</th>
+                <th class="text-center">Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for equipamento in equipamentos %}
+                <tr>
+                    <td>{{ equipamento.nome }}</td>
+                    
+                    <td>
+                        {% if equipamento.avaliado %}
+                            <span class="status-concluido">Avaliado</span>
+                        {% else %}
+                            <span class="status-pendente">Pendente</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if equipamento.data_ultima_vistoria %}
+                            {{ equipamento.data_ultima_vistoria|date:"d/m/Y" }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        {% if equipamento.avaliado %}
+                            <button class="avaliado" disabled>Avaliado</button>
+                        {% else %}
+                            <a class="avaliar-btn" href="{% url 'vistorias:vistoria_equipamento_form' vistoria.id equipamento.id %}">Avaliar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    {% else %}
+        <p>Todos os equipamentos já foram vistoriados.</p>
+    {% endif %}
+
+    <br><hr>
 
     <a href="{% url 'vistorias:detalhes_vistoria' vistoria.id %}">
         <button type="button">Ver Resumo</button>
     </a>
+
+    <br><hr>
+
     <a href="{% url 'vistorias:finalizar_vistoria' vistoria.id %}">
         <button type="button">Finalizar Vistoria</button>
     </a>
+
+    <br><hr>
+
     <a href="{% url 'vistorias:listar_vistorias' %}">
         <button type="button">Voltar</button>
     </a>

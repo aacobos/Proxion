@@ -11,8 +11,8 @@
 <div>
     <h3>Páginas relacionadas aos Usuários</h3>
     <ul>
-        <li><a href="{% url 'usuarios:listar_usuarios' %}">Listar usuários</a></li><br>
-        <li><a href="{% url 'usuarios:cadastrar_usuario' %}">Cadastrar usuário</a></li>
+        <li><a href="{% url 'usuarios:cadastrar_usuario' %}">Cadastrar usuário</a></li><br>
+        <li><a href="{% url 'usuarios:listar_usuarios' %}">Listar usuários</a></li><br>        
     </ul>
 </div>
 
@@ -20,9 +20,8 @@
 <div>
     <h3>Páginas relacionadas aos Clientes</h3>
     <ul>
+        <li><a href="{% url 'clientes:cadastrar_cliente' %}">Cadastrar cliente</a></li><br>
         <li><a href="{% url 'clientes:listar_clientes' %}">Listar clientes</a></li><br>
-        <li><a href="{% url 'clientes:cadastrar_cliente' %}">Cadastrar cliente</a></li>
- 
     </ul>
 </div>
 
@@ -30,12 +29,21 @@
 <div>
     <h3>Páginas relacionadas aos Equipamentos</h3>
     <ul>
-        <li><a href="{% url 'equipamentos:listar_equipamentos' %}">Listar equipamentos</a></li><br>
-        <li><a href="{% url 'equipamentos:cadastrar_equipamento' %}">Cadastrar equipamento</a></li><br>
-        <li><a href="{% url 'equipamentos:listar_categorias' %}">Listar categorias</a></li><br>
-        <li><a href="{% url 'equipamentos:cadastrar_categoria' %}">Cadastrar categoria</a></li><br>
+        <h4>Você pode cadastrar um parâmetro a ser avaliado.</h4>
+        <li><a href="{% url 'equipamentos:cadastrar_parametro' %}">Cadastrar parâmetro</a></li><br>
         <li><a href="{% url 'equipamentos:listar_parametros' %}">Listar parâmetros</a></li><br>
-        <li><a href="{% url 'equipamentos:cadastrar_parametro' %}">Cadastrar parâmetro</a></li><br> 
+        
+        <h4>Ao cadastrar uma categoria de equipamento, você vai fincular os itens a serem avaliados usando as informações dos parâmetros cadastrados.</h4>
+        <li><a href="{% url 'equipamentos:cadastrar_categoria' %}">Cadastrar categoria</a></li><br>
+        <li><a href="{% url 'equipamentos:listar_categorias' %}">Listar categorias</a></li><br>
+        
+        <h4>Por fim, com a base de informações criadas, você pode cadastrar um equipamento.</h4>
+        <h4></h4>
+        <li><a href="{% url 'equipamentos:cadastrar_equipamento' %}">Cadastrar equipamento</a></li><br>
+        <li><a href="{% url 'equipamentos:listar_equipamentos' %}">Listar equipamentos</a></li><br>
+        
+        
+        
     </ul>
 </div>
 

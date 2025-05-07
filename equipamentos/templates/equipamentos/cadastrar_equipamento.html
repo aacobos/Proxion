@@ -90,10 +90,7 @@
             <label for="id_cliente">Cliente:</label>
             {{ form.cliente }}
         </div>
-        <div class="form-group">
-            <label for="id_parametros_personalizados">Parâmetros Personalizados:</label>
-            {{ form.parametros_personalizados }}
-        </div>
+        
         <button type="submit" class="btn">Salvar</button>
         <a href="{% url 'equipamentos:listar_equipamentos' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
     </form>

@@ -70,12 +70,15 @@
         </div>
         <div class="form-group">
             <label for="id_data_inicio_contrato">Início do Contrato:</label>
-            {{ form.data_inicio_contrato }}
+            <input type="date" name="data_inicio_contrato" id="id_data_inicio_contrato" class="form-control" value="{{ form.data_inicio_contrato.value|default_if_none:'' }}">
         </div>
+        
         <div class="form-group">
             <label for="id_data_vencimento_contrato">Vencimento do Contrato:</label>
-            {{ form.data_vencimento_contrato }}
+            <input type="date" name="data_vencimento_contrato" id="id_data_vencimento_contrato" class="form-control" value="{{ form.data_vencimento_contrato.value|default_if_none:'' }}">
         </div>
+        
+        <br>
         <button type="submit" class="btn">Salvar</button>
         <a href="{% url 'clientes:listar_clientes' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
     </form>
