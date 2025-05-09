@@ -115,6 +115,12 @@ select {
     color: white;
 }
 
+.divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 10px 0;
+}
+
 /* HEADER AREA */
 
 .main-content {

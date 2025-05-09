@@ -1,31 +1,105 @@
-<!-- templates/base.html -->
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Painel de Administração{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Ícone e fontes -->
+    <link rel="icon" type="image/jpeg" href="{% static 'img/proxion-logo.jpg' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <!-- Estilo básico (você pode adaptar para Tailwind, Bootstrap ou outro) -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-
+    <!-- CSS Global + Dashboard -->
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    
     {% block extrahead %}{% endblock %}
 </head>
 <body>
-    <header>
-        {% block header %}
-            <h1>Sistema de Gestão de Vistorias</h1>
-        {% endblock %}
-    </header>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Sistema MP</h2>
+        </div>
+        <ul class="sidebar-menu">
 
-    <main class="container">
-        {% block content %}{% endblock %}
-    </main>
+            <!-- Usuários -->
+            <li><strong>Usuários</strong></li>
+            <li><a href="{% url 'usuarios:cadastrar_usuario' %}">• Cadastrar usuário</a></li>
+            <li><a href="{% url 'usuarios:listar_usuarios' %}">• Listar usuários</a></li>
+        
+            <hr class="divider">
+        
+            <!-- Clientes -->
+            <li><strong>Clientes</strong></li>
+            <li><a href="{% url 'clientes:cadastrar_cliente' %}">• Cadastrar cliente</a></li>
+            <li><a href="{% url 'clientes:listar_clientes' %}">• Listar clientes</a></li>
+        
+            <hr class="divider">
+        
+            <!-- Equipamentos -->
+            <li><strong>Equipamentos</strong></li>
+            <li style="margin-left: 10px;"><strong>Parâmetros</strong></li>
+            <li><a href="{% url 'equipamentos:cadastrar_parametro' %}" style="margin-left: 20px;">• Cadastrar parâmetros</a></li>
+            <li><a href="{% url 'equipamentos:listar_parametros' %}" style="margin-left: 20px;">• Listar parâmetros</a></li>
+        
+            <li style="margin-left: 10px;"><strong>Categorias</strong></li>
+            <li><a href="{% url 'equipamentos:cadastrar_categoria' %}" style="margin-left: 20px;">• Cadastrar categoria</a></li>
+            <li><a href="{% url 'equipamentos:listar_categorias' %}" style="margin-left: 20px;">• Listar categorias</a></li>
+        
+            <li style="margin-left: 10px;"><strong>Equipamentos</strong></li>
+            <li><a href="{% url 'equipamentos:cadastrar_equipamento' %}" style="margin-left: 20px;">• Cadastrar equipamento</a></li>
+            <li><a href="{% url 'equipamentos:listar_equipamentos' %}" style="margin-left: 20px;">• Listar equipamentos</a></li>
+        
+            <hr class="divider">
+        
+            <!-- Vistorias -->
+            <li><strong>Vistorias</strong></li>
+            <li><a href="{% url 'vistorias:criar_vistoria' %}">• Criar vistoria</a></li>
+            <li><a href="{% url 'vistorias:listar_vistorias' %}">• Listar vistorias</a></li>
+        </ul>        
+    </div>
 
-    <footer>
-        &copy; {{ now|default:"2025" }} Proxion - Todos os direitos reservados
-    </footer>
+    <!-- Conteúdo principal -->
+    <div class="main-content">
+        <div class="header">
+            <div class="header-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="welcome-message">
+                    <i class="fas fa-user"></i>
+                    <p>Bem vindo(a),</p><br/>
+                    <span id="userName">{{ request.user.username }}</span>
+                </div>
+            </div>
+            <div class="header-center">
+                <div class="header-titles">
+                    <h1>Painel de Controle</h1>
+                    <h2>Sistema de Manutenção</h2>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Conteúdo da página -->
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+
+        <!-- Rodapé -->
+        <div class="footer">
+            <p>© 2025 Sistema de Relatórios de Manutenção Preventiva</p>
+        </div>
+    </div>
+
+    <!-- JS Global -->
+    <script src="{% static 'js/global.js' %}"></script>
+    {% block extrajs %}{% endblock %}
 </body>
 </html>
