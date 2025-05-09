@@ -20,7 +20,10 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <h2>Sistema MP</h2>
+            <h2><a href="{% url 'core:dashboard' %}">Sistema MP</a></h2>
+            <br>
+            <h4><a href="{% url 'core:logout' %}">Sair</a></h4>
+            
         </div>
         <ul class="sidebar-menu">
 
@@ -69,7 +72,7 @@
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="welcome-message">
-                    <i class="fas fa-user"></i>
+                    <a href="{% url 'core:dashboard' %}" style="text-decoration: none; color: inherit;"><i class="fas fa-user"></i></a>
                     <p>Bem vindo(a),</p><br/>
                     <span id="userName">{{ request.user.username }}</span>
                 </div>

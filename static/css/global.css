@@ -234,12 +234,11 @@ button:hover {
 
 .footer {
     bottom: 0;
-    padding-bottom: 20px;
+    padding: 20px;
     text-align: center;
     margin-top: 20px;
     color: #666;
-    padding-top: 20px;
-    border-top: 1px solid #dddddd57;
+    border-top: 1px solid #dddddd;
 }
 
 @media (max-width: 768px) {

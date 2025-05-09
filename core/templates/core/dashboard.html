@@ -1,64 +1,65 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Bem-vindo ao Dashboard</h2>
-<p>Olá, {{ request.user.username }}!</p>
-<div>
-    <a href="{% url 'core:logout' %}">Sair</a>
-</div>
+<div class="container">
+    <div class="dashboard-grid">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-clipboard-list"></i>
+                Vistorias Recentes
+            </div>
+            <div class="card-content" id="recentInspectionsCount">{{ vistorias_ultimos_30_dias }}</div>
+            <div class="card-description">Últimos 30 dias</div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <i class="fa-solid fa-handshake"></i>
+                Clientes
+            </div>
+            <div class="card-content" id="maintenanceAlertsCount">{{ total_clientes }}</div>
+            <div class="card-description">Total de clientes</div>
+        </div>
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-tools"></i>
+                Equipamentos
+            </div>
+            <div class="card-content" id="activeEquipmentCount">{{ total_equipamentos }}</div>
+            <div class="card-description">Total de equipamentos cadastrados</div>
+        </div>
+    </div>
 
-<br><hr>
-<div>
-    <h3>Páginas relacionadas aos Usuários</h3>
-    <ul>
-        <li><a href="{% url 'usuarios:cadastrar_usuario' %}">Cadastrar usuário</a></li><br>
-        <li><a href="{% url 'usuarios:listar_usuarios' %}">Listar usuários</a></li><br>        
-    </ul>
-</div>
+    <div class="dashboard-grid">
+        <div class="card">
+            Colocar um gráfico de barras (histograma) mostrando a quantidade de equipamentos por status.
+        </div>
+        <div class="card">
+            Colocar um gráfico de barras (histograma) mostrando a quantidade de equipamentos por cliente.
+        </div>        
+    </div>
 
-<br><hr>
-<div>
-    <h3>Páginas relacionadas aos Clientes</h3>
-    <ul>
-        <li><a href="{% url 'clientes:cadastrar_cliente' %}">Cadastrar cliente</a></li><br>
-        <li><a href="{% url 'clientes:listar_clientes' %}">Listar clientes</a></li><br>
-    </ul>
-</div>
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-chart-line"></i>
+            Estatísticas Mensais
+        </div>
+        <div class="chart-container">
+            colocar um gráfico de colunas com a quantidade de vistorias feitas por mês.
+        </div>
+    </div>
 
-<br><hr>
-<div>
-    <h3>Páginas relacionadas aos Equipamentos</h3>
-    <ul>
-        <h4>Você pode cadastrar um parâmetro a ser avaliado.</h4>
-        <li><a href="{% url 'equipamentos:cadastrar_parametro' %}">Cadastrar parâmetro</a></li><br>
-        <li><a href="{% url 'equipamentos:listar_parametros' %}">Listar parâmetros</a></li><br>
-        
-        <h4>Ao cadastrar uma categoria de equipamento, você vai fincular os itens a serem avaliados usando as informações dos parâmetros cadastrados.</h4>
-        <li><a href="{% url 'equipamentos:cadastrar_categoria' %}">Cadastrar categoria</a></li><br>
-        <li><a href="{% url 'equipamentos:listar_categorias' %}">Listar categorias</a></li><br>
-        
-        <h4>Por fim, com a base de informações criadas, você pode cadastrar um equipamento.</h4>
-        <h4></h4>
-        <li><a href="{% url 'equipamentos:cadastrar_equipamento' %}">Cadastrar equipamento</a></li><br>
-        <li><a href="{% url 'equipamentos:listar_equipamentos' %}">Listar equipamentos</a></li><br>
-        
-        
-        
-    </ul>
-</div>
-
-
-<br><hr>
-<div>
-    <h3>Páginas relacionadas as vistorias</h3>
-    <ul>
-        <li><a href="{% url 'vistorias:listar_vistorias' %}">Listar vistorias</a></li><br>
-        <li><a href="{% url 'vistorias:criar_vistoria' %}">Criar vistoria</a></li><br>
-
-    </ul>
-</div>
-
-
-
+    <div class="quick-actions">
+        <a href="{% url 'vistorias:criar_vistoria' %}" class="action-button">
+            <i class="fas fa-plus"></i>
+            <span>Nova Vistoria</span>
+        </a>
+        <button class="action-button" id="importData">
+            <i class="fas fa-file-import"></i>
+            <span>Importar Dados</span>
+        </button>
+        <a href="/Projeto/pages/relatorios.html" class="action-button">
+            <i class="fas fa-file-alt"></i>
+            <span>Relatórios</span>
+        </a>
+    </div>
 {% endblock %}
-
