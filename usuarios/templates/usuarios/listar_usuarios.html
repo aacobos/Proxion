@@ -2,24 +2,27 @@
 
 {% block title %}
     Lista de Usuários
-{% endblock%}
-
+{% endblock %}
 
 {% block header %}
     <h1>Lista de Usuários</h1>
 {% endblock %}
 
-
 {% block content %}
 <h2>Usuários Cadastrados</h2>
+
+<form method="get" style="margin-bottom: 16px;">
+    <input type="text" name="busca" placeholder="Buscar por nome, CPF ou e-mail" value="{{ busca }}">
+    <button type="submit">Buscar</button>
+</form>
 
 <table border="1" cellspacing="0" cellpadding="8">
     <thead>
         <tr>
-            <th>Nome</th>
-            <th>CPF</th>
-            <th>Email</th>
-            <th>Perfil</th>
+            <th><a href="?busca={{ busca }}&ordenar_por=nome_completo">Nome</a></th>
+            <th><a href="?busca={{ busca }}&ordenar_por=cpf">CPF</a></th>
+            <th><a href="?busca={{ busca }}&ordenar_por=email">Email</a></th>
+            <th><a href="?busca={{ busca }}&ordenar_por=perfil">Perfil</a></th>
             <th>Ações</th>
         </tr>
     </thead>
@@ -48,7 +51,7 @@
 
 <br><hr>
 <div>
-    <a href="{% url 'usuarios:cadastrar_usuario' %}" class="btn btn-primary mb-3">Cadastrar Usuario</a>
+    <a href="{% url 'usuarios:cadastrar_usuario' %}" class="btn btn-primary mb-3">Cadastrar Usuário</a>
     <a href="{% url 'core:dashboard' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
 </div>
 

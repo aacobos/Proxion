@@ -7,14 +7,32 @@
 
 {% block title %}
     Editar usuário
-{% endblock%}
-
+{% endblock %}
 
 {% block content %}
 <div class="form-container">
     <h2>Editar Usuário</h2>
+
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
+
+        {% if form.errors %}
+            <div class="form-errors" style="color: red; margin-bottom: 10px;">
+                <ul>
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <label for="id_username">Nome de usuário:</label>
+        {{ form.username }}
 
         <label for="id_nome_completo">Nome completo:</label>
         {{ form.nome_completo }}
@@ -47,7 +65,27 @@
         <label for="id_perfil">Perfil:</label>
         {{ form.perfil }}
 
-        <button type="submit">Salvar alterações</button>
+        <label for="id_nova_senha">Nova senha:</label>
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <input type="text" name="nova_senha" id="id_nova_senha" placeholder="Deixe em branco para manter a senha atual">
+            <button type="button" onclick="gerarSenha()">Gerar senha</button>
+        </div>
+
+        <button type="submit" style="margin-top: 20px;">Salvar alterações</button>
+
+        <br>
+        <a href="{% url 'usuarios:listar_usuarios' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
     </form>
 </div>
+
+<script>
+function gerarSenha(tamanho = 8) {
+    const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let senha = '';
+    for (let i = 0; i < tamanho; i++) {
+        senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    }
+    document.getElementById('id_nova_senha').value = senha;
+}
+</script>
 {% endblock %}
