@@ -1,21 +1,56 @@
-{% extends 'base.html' %}
+{% load static %}
 
-{% block content %}
-<h2>Login</h2>
-<form method="POST">
-    {% csrf_token %}
-    <label for="username">Usuário:</label>
-    <input type="text" name="username" required><br><br>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login – SMP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <label for="password">Senha:</label>
-    <input type="password" name="password" required><br><br>
+  <!-- Estilos do novo frontend -->
+  <link rel="stylesheet" href="{% static 'css/global.css' %}">
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+  <link rel="icon" href="{% static 'img/proxion-logo.jpg' %}" />
 
-    <button type="submit">Entrar</button>
-</form>
+  <!-- Font Awesome (apenas ícone da lua/sol) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+</head>
+<body>
+  <div class="login-container">
+    <img src="{% static 'img/proxion-logo.jpg' %}" alt="Logo Proxion" class="logo" />
+    <h2>Login</h2>
 
-{% if messages %}
-    {% for message in messages %}
-        <p style="color:red;">{{ message }}</p>
-    {% endfor %}
-{% endif %}
-{% endblock %}
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" name="username" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+
+      <button type="submit">Entrar</button>
+    </form>
+
+    {% if messages %}
+      <div class="error" id="error-msg">
+        {% for message in messages %}
+          {{ message }}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <a href="#" class="forgot-password" onclick="forgotPassword()">Esqueceu sua senha?</a>
+  </div>
+
+  <script src="{% static 'js/global.js' %}"></script>
+  <script>
+    function forgotPassword () {
+      alert('Entre em contato com o administrador do sistema para recuperar sua senha.');
+    }
+  </script>
+</body>
+</html>
