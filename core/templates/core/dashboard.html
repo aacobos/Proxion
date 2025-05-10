@@ -3,26 +3,26 @@
 {% block content %}
 <div class="container">
     <div class="dashboard-grid">
-        <div class="card">
+        <div class="card"><a href="{% url 'vistorias:listar_vistorias' %}" style="text-decoration: none; color: inherit;">
             <div class="card-header">
                 <i class="fas fa-clipboard-list"></i>
-                Vistorias Recentes
+                Vistorias Recentes</a>
             </div>
             <div class="card-content" id="recentInspectionsCount">{{ vistorias_ultimos_30_dias }}</div>
             <div class="card-description">Últimos 30 dias</div>
         </div>
         <div class="card">
-            <div class="card-header">
+            <div class="card-header"><a href="{% url 'clientes:listar_clientes' %}" style="text-decoration: none; color: inherit;">
                 <i class="fa-solid fa-handshake"></i>
-                Clientes
+                Clientes</a>
             </div>
             <div class="card-content" id="maintenanceAlertsCount">{{ total_clientes }}</div>
             <div class="card-description">Total de clientes</div>
         </div>
         <div class="card">
-            <div class="card-header">
+            <div class="card-header"><a href="{% url 'equipamentos:listar_equipamentos' %}" style="text-decoration: none; color: inherit;">
                 <i class="fas fa-tools"></i>
-                Equipamentos
+                Equipamentos</a>
             </div>
             <div class="card-content" id="activeEquipmentCount">{{ total_equipamentos }}</div>
             <div class="card-description">Total de equipamentos cadastrados</div>
@@ -31,11 +31,76 @@
 
     <div class="dashboard-grid">
         <div class="card">
-            Colocar um gráfico de barras (histograma) mostrando a quantidade de equipamentos por status.
+            <div class="card-header">
+                <i class="fas fa-cogs"></i>
+                Equipamentos por Status
+            </div>
+            <div class="chart-container">
+                <canvas id="equipamentosStatusChart"></canvas>
+            </div>
         </div>
+        
+        <script>
+            const statusCtx = document.getElementById('equipamentosStatusChart').getContext('2d');
+            const statusChart = new Chart(statusCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ grafico_status_labels|safe }},
+                    datasets: [{
+                        label: 'Equipamentos',
+                        data: {{ grafico_status_dados|safe }},
+                        backgroundColor: 'rgba(255, 206, 86, 0.7)',
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            stepSize: 1
+                        }
+                    }
+                }
+            });
+        </script>
         <div class="card">
-            Colocar um gráfico de barras (histograma) mostrando a quantidade de equipamentos por cliente.
-        </div>        
+            <div class="card-header">
+                <i class="fas fa-chart-bar"></i>
+                Equipamentos por Cliente
+            </div>
+            <div class="chart-container">
+                <canvas id="equipamentosPorClienteChart"></canvas>
+            </div>
+
+            <script>
+                const ctxEquipPorCliente = document.getElementById('equipamentosPorClienteChart').getContext('2d');
+                const equipamentosPorClienteChart = new Chart(ctxEquipPorCliente, {
+                    type: 'bar',
+                    data: {
+                        labels: {{ equipamentos_cliente_labels|safe }},
+                        datasets: [{
+                            label: 'Equipamentos',
+                            data: {{ equipamentos_cliente_dados|safe }},
+                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        indexAxis: 'y', // para deixar em barras horizontais (remova se quiser vertical)
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                stepSize: 1
+                            }
+                        }
+                    }
+                });
+            </script>
+        </div>       
     </div>
 
     <div class="card">
@@ -44,8 +109,34 @@
             Estatísticas Mensais
         </div>
         <div class="chart-container">
-            colocar um gráfico de colunas com a quantidade de vistorias feitas por mês.
+            <canvas id="vistoriasMensaisChart"></canvas>
         </div>
+        
+        <script>
+            const ctx = document.getElementById('vistoriasMensaisChart').getContext('2d');
+            const vistoriasChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {{ grafico_labels|safe }},
+                    datasets: [{
+                        label: 'Vistorias por Mês',
+                        data: {{ grafico_dados|safe }},
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            stepSize: 1
+                        }
+                    }
+                }
+            });
+        </script>
     </div>
 
     <div class="quick-actions">
@@ -62,4 +153,8 @@
             <span>Relatórios</span>
         </a>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 {% endblock %}
+
