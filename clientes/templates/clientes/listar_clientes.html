@@ -11,13 +11,29 @@
 {% block content %}
 <h2>Clientes Cadastrados</h2>
 
+<form method="get" action="{% url 'clientes:listar_clientes' %}" style="margin-bottom: 20px;">
+    <input type="text" name="q" placeholder="Buscar por empresa, CNPJ ou código"
+           value="{{ query }}" style="padding: 6px; width: 300px;">
+    <button type="submit" style="padding: 6px;">Buscar</button>
+    {% if query %}
+        <a href="{% url 'clientes:listar_clientes' %}" style="margin-left: 10px;">Limpar</a>
+    {% endif %}
+</form>
+
 <table border="1" cellspacing="0" cellpadding="8">
     <thead>
-        <tr>
-            <th>Nome Fantasia</th>
-            <th>CNPJ</th>
-            <th>Responsável</th>
-            <th>Telefone</th>
+        {% for col, label in colunas %}
+            <th>
+                <a href="?{% if query %}q={{ query }}&{% endif %}sort={{ col }}&direction={% if sort == col and direction == 'asc' %}desc{% else %}asc{% endif %}">
+                    {{ label }}
+                    {% if sort == col %}
+                        {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+                    {% endif %}
+                </a>
+            </th>
+        {% endfor %}
+            <th>Última Vistoria</th>
+            <th>Quantidade Equipamentos</th>
             <th>Ações</th>
         </tr>
     </thead>
@@ -25,9 +41,12 @@
         {% for cliente in clientes %}
         <tr>
             <td><a href="{% url 'clientes:detalhes_cliente' cliente.id %}">{{ cliente.nome_fantasia }}</a></td>
+            <td>{{ cliente.sigla }}</td>
             <td>{{ cliente.cnpj }}</td>
             <td>{{ cliente.responsavel }}</td>
-            <td>{{ cliente.telefone }}</td>
+            <td>{{ cliente.numero_contrato }}</td>
+            <td>{{ cliente.ultima_vistoria_data }}</td>
+            <td>{{ cliente.total_equipamentos }}</td>
             <td>
                 <a href="{% url 'clientes:editar_cliente' cliente.id %}">Editar</a>
                 <form method="POST" action="{% url 'clientes:excluir_cliente' cliente.id %}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este cliente?');">

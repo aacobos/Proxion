@@ -9,9 +9,9 @@ class Cliente(models.Model):
     nome_fantasia = models.CharField(max_length=255)
     razao_social = models.CharField(max_length=255, blank=True)
     cnpj = models.CharField(max_length=18, unique=True)
-    telefone = models.CharField(max_length=20, blank=True)
+    
     email = models.EmailField(blank=True)
-    endereco = models.TextField(blank=True)
+    endereco = models.CharField(max_length=255)
 
     # Sigla do cliente
     sigla = models.CharField(max_length=50, blank=True, verbose_name='Sigla do Cliente')

@@ -24,9 +24,6 @@
         <label for="id_cnpj">CNPJ:</label>
         {{ form.cnpj }}
 
-        <label for="id_telefone">Telefone:</label>
-        {{ form.telefone }}
-
         <label for="id_email">Email:</label>
         {{ form.email }}
 
@@ -65,9 +62,13 @@
             <label for="id_data_vencimento_contrato">Vencimento do Contrato:</label>
             <input type="date" name="data_vencimento_contrato" id="id_data_vencimento_contrato" class="form-control" value="{{ form.data_vencimento_contrato.value|date:'Y-m-d' }}">
         </div>
-    
+        
         <br>
         <button type="submit">Salvar alterações</button>
+
+        <a href="{% url 'clientes:listar_clientes' %}">
+            <button type="button" style="margin-top: 10px;">Voltar</button>
+        </a>
     </form>
 </div>
 {% endblock %}

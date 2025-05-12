@@ -7,7 +7,7 @@ from .models import Cliente
 class ClienteAdmin(admin.ModelAdmin):
     # Campos exibidos na listagem
     list_display = (
-        'nome_fantasia', 'razao_social', 'cnpj', 'responsavel', 'telefone', 'email',
+        'nome_fantasia', 'razao_social', 'cnpj', 'responsavel', 'email',
         'numero_contrato', 'data_inicio_contrato',
         'data_vencimento_contrato', 'data_cadastro', 'logo_thumbnail'
     )
