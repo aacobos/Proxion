@@ -5,6 +5,11 @@ from .forms import VistoriaForm
 from django.utils.timezone import now
 from django.contrib import messages
 
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from io import BytesIO
+
 def listar_vistorias(request):
     vistorias = Vistoria.objects.all()
     return render(request, 'vistorias/listar_vistorias.html', {'vistorias': vistorias})
@@ -118,3 +123,28 @@ def detalhes_vistoria(request, vistoria_id):
         'vistoria': vistoria,
         'equipamentos': equipamentos
     })
+
+def gerar_relatorio_vistoria(request, pk):
+    vistoria = get_object_or_404(Vistoria, pk=pk)
+    equipamentos = VistoriaEquipamento.objects.filter(vistoria=vistoria).select_related('equipamento')
+
+    template_path = 'vistorias/relatorio_vistoria.html'
+    context = {
+        'vistoria': vistoria,
+        'equipamentos': equipamentos,
+    }
+
+    template = get_template(template_path)
+    html = template.render(context)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="relatorio_vistoria_{vistoria.pk}.pdf"'
+
+    result = BytesIO()
+    pisa_status = pisa.CreatePDF(html, dest=result)
+
+    if pisa_status.err:
+        return HttpResponse('Erro ao gerar PDF', status=500)
+
+    response.write(result.getvalue())
+    return response
