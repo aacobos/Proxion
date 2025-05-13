@@ -27,7 +27,16 @@
                 <strong>{{ item.equipamento.nome }}</strong> - {{ item.get_status_final_display }}
                 <ul>
                     {% for avaliacao in item.avaliacoes.all %}
-                        <li>{{ avaliacao.parametro.nome }}: {{ avaliacao.get_situacao_display }} - {{ avaliacao.observacoes }}</li>
+                        <li>
+                            {{ avaliacao.parametro.nome }}:
+                            {{ avaliacao.get_situacao_display }}
+                            {% if avaliacao.situacao == "danificado" and avaliacao.gravidade %}
+                                - Gravidade: {{ avaliacao.get_gravidade_display }}
+                            {% endif %}
+                            {% if avaliacao.observacoes %}
+                                - {{ avaliacao.observacoes }}
+                            {% endif %}
+                        </li>
                     {% endfor %}
                 </ul>
             </li>

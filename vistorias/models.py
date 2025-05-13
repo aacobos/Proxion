@@ -74,11 +74,28 @@ class AvaliacaoParametro(models.Model):
         ('danificado', 'Danificado'),
     )
 
+    GRAVIDADE_CHOICES = (
+        ('leve', 'Leve'),
+        ('medio', 'Médio'),
+        ('grave', 'Grave'),
+    )
+
     situacao = models.CharField(max_length=20, choices=SITUACAO_CHOICES)
+    gravidade = models.CharField(
+        max_length=10,
+        choices=GRAVIDADE_CHOICES,
+        blank=True,
+        null=True,
+        help_text="Gravidade do problema, se danificado"
+    )
     observacoes = models.TextField(blank=True)
 
     class Meta:
         unique_together = ('vistoria_equipamento', 'parametro')
+
+    def clean(self):
+        if self.situacao == 'danificado' and not self.gravidade:
+            raise ValidationError("Gravidade é obrigatória para itens danificados.")
 
     def __str__(self):
         return f"{self.parametro.nome} - {self.get_situacao_display()}"

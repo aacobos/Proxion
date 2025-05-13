@@ -17,3 +17,11 @@ class EquipamentoForm(forms.ModelForm):
             'descricao': forms.Textarea(attrs={'rows': 3}),
             'parametros_personalizados': forms.CheckboxSelectMultiple(),
         }
+
+class ParametroEquipamentoForm(forms.ModelForm):
+    class Meta:
+        model = ParametroEquipamento
+        fields = ['nome', 'avaliacao_ajuda']
+        widgets = {
+            'avaliacao_ajuda': forms.Textarea(attrs={'rows': 4}),
+        }

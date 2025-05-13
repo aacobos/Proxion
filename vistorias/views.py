@@ -86,12 +86,15 @@ def vistoria_equipamento_form(request, vistoria_id, equipamento_id):
 
         for parametro in parametros:
             situacao = request.POST.get(f'parametro_{parametro.id}')
+            gravidade = request.POST.get(f'gravidade_{parametro.id}')  # <-- NOVO
             obs = request.POST.get(f'observacao_{parametro.id}', '')
+
             if situacao:
                 AvaliacaoParametro.objects.create(
                     vistoria_equipamento=vistoria_equip,
                     parametro=parametro,
                     situacao=situacao,
+                    gravidade=gravidade if situacao == 'danificado' else None,
                     observacoes=obs
                 )
 
@@ -104,7 +107,9 @@ def vistoria_equipamento_form(request, vistoria_id, equipamento_id):
         'parametros': parametros,
         'situacao_choices': AvaliacaoParametro.SITUACAO_CHOICES,
         'status_choices': equipamento.STATUS_CHOICES,
+        'gravidade_choices': AvaliacaoParametro.GRAVIDADE_CHOICES,  # <-- NOVO
     })
+
 
 def finalizar_vistoria(request, vistoria_id):
     vistoria = get_object_or_404(Vistoria, id=vistoria_id)

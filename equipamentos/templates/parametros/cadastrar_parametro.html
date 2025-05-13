@@ -18,26 +18,7 @@
     <h2>Dados do Parâmetro</h2>
     <form method="POST">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="id_nome">Nome:</label>
-            <input type="text" name="nome" id="id_nome" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="id_gravidade">Gravidade:</label>
-            <select name="gravidade" id="id_gravidade" class="form-control" required>
-                <option value="">Selecione</option>
-                <option value="leve">Leve</option>
-                <option value="medio">Médio</option>
-                <option value="grave">Grave</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="id_avaliacao_ajuda">Como Avaliar:</label>
-            <textarea name="avaliacao_ajuda" id="id_avaliacao_ajuda" rows="4" class="form-control"></textarea>
-            <small class="form-text text-muted">
-                Descreva como o analista deve avaliar este parâmetro.
-            </small>
-        </div>
+        {{ form.as_p }}
         <button type="submit" class="btn">Salvar</button>
         <a href="{% url 'equipamentos:listar_parametros' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
     </form>

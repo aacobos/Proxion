@@ -7,12 +7,7 @@ from usuarios.models import Usuario
 class ParametroEquipamento(models.Model):
     nome = models.CharField(max_length=100, unique=True)
 
-    GRAVIDADES = (
-        ('leve', 'Leve'),
-        ('medio', 'Médio'),
-        ('grave', 'Grave'),
-    )
-    gravidade = models.CharField(max_length=10, choices=GRAVIDADES)
+    
 
     avaliacao_ajuda = models.TextField(
         blank=True,
@@ -21,7 +16,7 @@ class ParametroEquipamento(models.Model):
     )
 
     def __str__(self):
-        return f"{self.nome} ({self.get_gravidade_display()})"
+        return self.nome
 
 
 # Categoria de Equipamento: ex: Coletor de Dados, Nobreak, Rádio, etc.

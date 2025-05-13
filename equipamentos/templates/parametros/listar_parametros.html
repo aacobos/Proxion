@@ -20,7 +20,6 @@
     <thead>
         <tr>
             <th>Nome</th>
-            <th>Gravidade</th>
             <th>O que avaliar</th>
             <th>Ações</th>
         </tr>
@@ -29,7 +28,6 @@
         {% for parametro in parametros %}
         <tr>
             <td><a href="{% url 'equipamentos:detalhes_parametro' parametro.id %}">{{ parametro.nome }}</a></td>
-            <td>{{ parametro.gravidade|capfirst }}</td>
             <td>{{ parametro.avaliacao_ajuda }}</td>
             <td>
                 <a href="{% url 'equipamentos:editar_parametro' parametro.id %}">Editar</a>
@@ -48,5 +46,4 @@
 </table>
 
 <br><hr>
-
 {% endblock %}

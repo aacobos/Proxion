@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Equipamento, CategoriaEquipamento, ParametroEquipamento
-from .forms import EquipamentoForm
+from .forms import EquipamentoForm, ParametroEquipamentoForm
 from django.contrib import messages
 
 # Listar equipamentos
@@ -115,46 +115,32 @@ def listar_parametros(request):
     parametros = ParametroEquipamento.objects.all()
     return render(request, 'parametros/listar_parametros.html', {'parametros': parametros})
 
-# Cadastrar novo parâmetro
+# Cadastrar parâmetros
 def cadastrar_parametro(request):
     if request.method == 'POST':
-        nome = request.POST.get('nome')
-        gravidade = request.POST.get('gravidade')
-        avaliacao_ajuda = request.POST.get('avaliacao_ajuda')
-
-        if nome and gravidade:
-            ParametroEquipamento.objects.create(
-                nome=nome,
-                gravidade=gravidade,
-                avaliacao_ajuda=avaliacao_ajuda
-            )
-            messages.success(request, 'Parâmetro cadastrado com sucesso!')
+        form = ParametroEquipamentoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Parâmetro cadastrado com sucesso.')
             return redirect('equipamentos:listar_parametros')
-        else:
-            messages.error(request, 'Os campos Nome e Gravidade são obrigatórios.')
+    else:
+        form = ParametroEquipamentoForm()
+    
+    return render(request, 'parametros/cadastrar_parametro.html', {'form': form})
 
-    return render(request, 'parametros/cadastrar_parametro.html')
-
-# Editar parâmetro existente
+# Editar parâmetro
 def editar_parametro(request, pk):
     parametro = get_object_or_404(ParametroEquipamento, pk=pk)
-
     if request.method == 'POST':
-        nome = request.POST.get('nome')
-        gravidade = request.POST.get('gravidade')
-        avaliacao_ajuda = request.POST.get('avaliacao_ajuda')
-
-        if nome and gravidade:
-            parametro.nome = nome
-            parametro.gravidade = gravidade
-            parametro.avaliacao_ajuda = avaliacao_ajuda
-            parametro.save()
-            messages.success(request, 'Parâmetro atualizado com sucesso!')
+        form = ParametroEquipamentoForm(request.POST, instance=parametro)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Parâmetro atualizado com sucesso.')
             return redirect('equipamentos:listar_parametros')
-        else:
-            messages.error(request, 'Nome e gravidade são obrigatórios.')
+    else:
+        form = ParametroEquipamentoForm(instance=parametro)
 
-    return render(request, 'parametros/editar_parametro.html', {'parametro': parametro})
+    return render(request, 'parametros/editar_parametro.html', {'form': form, 'parametro': parametro})
 
 # Detalhes do parâmetro
 def detalhes_parametro(request, pk):

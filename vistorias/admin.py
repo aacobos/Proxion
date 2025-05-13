@@ -74,6 +74,6 @@ class VistoriaAdmin(admin.ModelAdmin):
 @admin.register(AvaliacaoParametro)
 class AvaliacaoParametroAdmin(admin.ModelAdmin):
     list_display = ('parametro', 'vistoria_equipamento', 'situacao')
-    list_filter = ('situacao', 'parametro__gravidade')
+    list_filter = ('situacao', 'parametro')
     search_fields = ('parametro__nome', 'vistoria_equipamento__equipamento__nome')
     autocomplete_fields = ['parametro', 'vistoria_equipamento']

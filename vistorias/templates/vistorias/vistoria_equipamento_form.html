@@ -15,7 +15,7 @@
 
 {% block content %}
 <div class="form-container">
-    <form method="post">
+    <form method="post" id="form-vistoria">
         {% csrf_token %}
         <label>Status Final:</label>
         <select name="status_final" required>
@@ -29,22 +29,65 @@
 
         <h3>Parâmetros</h3>
         {% for parametro in parametros %}
-            <fieldset>
-                <legend>{{ parametro.nome }}</legend>
-                {% for valor, nome in situacao_choices %}
-                    <label>
-                        <input type="radio" name="parametro_{{ parametro.id }}" value="{{ valor }}" required> {{ nome }}
-                    </label>
-                {% endfor %}
-                <textarea name="observacao_{{ parametro.id }}" placeholder="Observações..."></textarea>
-            </fieldset>
+        <fieldset>
+            <legend>{{ parametro.nome }}</legend>
+
+            {% for valor, nome in situacao_choices %}
+                <label>
+                    <input type="radio"
+                           name="parametro_{{ parametro.id }}"
+                           value="{{ valor }}"
+                           required
+                           class="situacao-radio"
+                           data-param-id="{{ parametro.id }}">
+                    {{ nome }}
+                </label>
+            {% endfor %}
+
+            <div class="gravidade-container" id="gravidade-{{ parametro.id }}" style="display: none; margin-top: 8px;">
+                <label>Gravidade:</label><br>
+                <select name="gravidade_{{ parametro.id }}">
+                    <option value="">Selecione...</option>
+                    <option value="leve">Leve</option>
+                    <option value="medio">Médio</option>
+                    <option value="grave">Grave</option>
+                </select>
+            </div>
+
+            <textarea name="observacao_{{ parametro.id }}" placeholder="Observações..."></textarea>
+        </fieldset>
         {% endfor %}
 
         <button type="submit">Salvar</button>
     </form>
 
-    <a href="{% url 'vistorias:equipamentos_para_vistoria' vistoria.id %}">
-        <button type="button" style="margin-top: 10px;">Voltar</button>
-    </a>
+    <!-- Botão de voltar fora do form -->
+    <div style="margin-top: 10px;">
+        <a href="{% url 'vistorias:equipamentos_para_vistoria' vistoria.id %}">
+            <button type="button">Voltar</button>
+        </a>
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.situacao-radio').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                const paramId = this.dataset.paramId;
+                const container = document.getElementById('gravidade-' + paramId);
+                if (this.value === 'danificado') {
+                    container.style.display = 'block';
+                } else {
+                    container.style.display = 'none';
+                    container.querySelector('select').value = '';
+                }
+            });
+
+            // Mostrar a gravidade se já estiver selecionada como danificado ao recarregar a página
+            if (radio.checked && radio.value === 'danificado') {
+                document.getElementById('gravidade-' + radio.dataset.paramId).style.display = 'block';
+            }
+        });
+    });
+</script>
 {% endblock %}

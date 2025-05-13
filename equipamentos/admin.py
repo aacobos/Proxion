@@ -9,7 +9,7 @@ class CategoriaEquipamentoAdmin(admin.ModelAdmin):
 
 @admin.register(ParametroEquipamento)
 class ParametroEquipamentoAdmin(admin.ModelAdmin):
-    list_display = ['nome', 'gravidade']
+    list_display = ['nome']
     search_fields = ['nome']
 
 @admin.register(Equipamento)
