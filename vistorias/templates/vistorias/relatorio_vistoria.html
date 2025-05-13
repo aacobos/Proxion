@@ -1,96 +1,300 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <title>Relatório de Serviço</title>
+
     <style>
-        body { font-family: Arial, sans-serif; font-size: 12px; }
-        h2 { text-align: center; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        th, td { border: 1px solid #333; padding: 6px; text-align: left; }
-        .no-border td { border: none; }
-        .section-title { margin-top: 30px; font-weight: bold; }
+        /* CSS GLOBAL */
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #e9e9e9;
+        }
+        
+        .page {
+            page-break-after: always; 
+            display: flex;
+            flex-direction: column;
+            max-width: 795px;
+            margin: 10px auto; 
+            padding: 5px;
+            background-color: #ffffff;  
+        }
+
+        /* PRIMEIRA PÁGINA */
+        .img-proxion {
+            width: 100%;
+            height: auto;
+        }
+
+        .content {
+            display: flex; 
+            flex-direction: column; 
+            align-items: end;
+            margin-right: 100px;
+            margin-top: 100px;
+        }
+
+        .content img {
+            height: auto;
+            max-width: 250px;
+        }
+
+        .report-details {
+            border-left: 2px solid #c2c2c2;
+            padding-left: 60px;
+            text-align: justify;
+            width: 200px;
+        }
+
+        .report-details h2 {
+            color: #646464;
+            font-size: 14px;
+        }
+
+        .report-details p {
+            margin: 5px 0;
+            color: #555;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* HEADER PAGES */
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #333333;
+        }
+
+        header img {
+            max-width: 200px;
+            padding-right: 20px;
+        }
+
+        /* FOOTER FIRST PAGE */
+        .footer-first-page {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            margin-top: auto;
+        }
+
+        .img-logo-footer {
+            max-width: 150px;
+            padding-right: 20px;
+            border-right: 2px solid #004d40;
+        }
+
+        .footer-text {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            color: #004d40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 10px;
+        }
+
+        .footer-text-1 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            gap: 10px;
+        }
+        
+        .footer-text-2 {
+            display: flex;
+            font-size: 14px;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+        }
+
+        /* FOOTER GLOBAL */
+        .footer {
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            gap: 20px;
+            box-sizing: border-box;
+            color: #004d40;
+            border-top: 1px solid #8685857a;
+            margin-top: auto;
+        }
+        .footer p {
+            line-height: 25px;
+        }
+        .footer img {
+            max-width: 200px;
+            padding: 0 20px;
+        }
+
+
+
     </style>
+
+
 </head>
 <body>
+    <!-- Primeira página -->
+    <div class="page">
+        <img class="img-proxion" src="{{ BASE_DIR }}/static/img/banner.png" alt="Banner Proxion">
 
-<h2>RELATÓRIO DE VISTORIA PREVENTIVA</h2>
+        <div class="content">
+            {% if vistoria.cliente.logo %}
+                <img src="{{ vistoria.cliente.logo.path }}" alt="Logo do Cliente">
+            {% endif %}
 
-<table class="no-border">
-    <tr>
-        <td><strong>Cliente:</strong> {{ vistoria.cliente.nome_fantasia }}</td>
-        <td><strong>Código:</strong> {{ vistoria.cliente.sigla }}</td>
-    </tr>
-    <tr>
-        <td><strong>Responsável:</strong> {{ vistoria.cliente.responsavel|default:"---" }}</td>
-        <td><strong>E-mail:</strong> {{ vistoria.cliente.email|default:"---" }}</td>
-    </tr>
-    <tr>
-        <td><strong>Telefone:</strong> {{ vistoria.cliente.telefone|default:"---" }}</td>
-        <td><strong>Cidade:</strong> {{ vistoria.cliente.cidade|default:"---" }}</td>
-    </tr>
-    <tr>
-        <td><strong>Data:</strong> {{ vistoria.data|date:"d/m/Y" }}</td>
-        <td><strong>Analista:</strong> {{ vistoria.realizada_por.nome_completo }}</td>
-    </tr>
-</table>
+            <div class="report-details">
+                <h2>Dados da Visita</h2>
+                <p>Cliente: {{ vistoria.cliente.nome_fantasia }}</p>
+                <p>Código: {{ vistoria.cliente.sigla }}</p>
+                <p>Responsável: {{ vistoria.cliente.responsavel }}</p>
+                <p>E-mail: {{ vistoria.cliente.email }}</p>
+                <p>Telefone: {{ vistoria.cliente.telefone }}</p>
+                <p>Cidade: {{ vistoria.cliente.cidade }}</p>
+                <p>Data: {{ vistoria.data|date:"d/m/Y" }}</p>
+                <p>Analista: {{ vistoria.realizada_por.nome_completo }}</p>
+            </div>
+        </div>
 
-<p class="section-title">EQUIPAMENTOS VISTORIADOS</p>
-<table>
-    <thead>
-        <tr>
-            <th>Tipo</th>
-            <th>Modelo</th>
-            <th>Nº de Série</th>
-            <th>Status</th>
-            <th>Observações</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for ve in equipamentos %}
-        <tr>
-            <td>{{ ve.equipamento.categoria.nome }}</td>
-            <td>{{ ve.equipamento.modelo }}</td>
-            <td>{{ ve.equipamento.numero_serie }}</td>
-            <td>{{ ve.get_status_final_display }}</td>
-            <td>{{ ve.observacoes|default:"-" }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        <div class="footer-first-page">
+            <div class="img-logo-footer">
+                <img src="{{ BASE_DIR }}/static/img/proxion-logo.png" alt="Logo Proxion">
+            </div>
+            <div class="footer-text">
+                <div class="footer-text-1">
+                    <p>Tel: (12) 3202-9292</p>
+                    <p>WWW.PROXION.COM.BR</p>
+                </div>
+                <div class="footer-text-2">
+                    <p>Av. Shishima Hifumi, 2911, Conj. 205 - Parque Tec. UNIVAP - Urbanova</p>
+                    <p>São José dos Campos - SP</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<p class="section-title">OBSERVAÇÕES GERAIS</p>
-<p>{{ vistoria.observacoes_gerais|default:"Nenhuma observação registrada." }}</p>
+    <!-- Lista de Equipamentos -->
+    <div class="page">
+        <h2>Lista de Equipamentos</h2>
+        <table class="equipment-table">
+            <thead>
+                <tr>
+                    <th>Tipo de Equipamento</th>
+                    <th>Modelo</th>
+                    <th>Serial Number</th>
+                    <th>Status</th>
+                    <th>Observações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ve in equipamentos %}
+                <tr>
+                    <td>{{ ve.equipamento.categoria.nome }}</td>
+                    <td>{{ ve.equipamento.modelo }}</td>
+                    <td>{{ ve.equipamento.numero_serie }}</td>
+                    <td>{{ ve.get_status_final_display }}</td>
+                    <td>{{ ve.observacoes|default:"-" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-<p class="section-title">ASSINATURA</p>
-<table class="no-border">
-    <tr>
-        <td><strong>Nome:</strong> _________________________________</td>
-        <td><strong>RG:</strong> ___________________</td>
-    </tr>
-    <tr>
-        <td><strong>Cargo:</strong> __________________________________________</td>
-        <td><strong>Data:</strong> ____/____/________</td>
-    </tr>
-    <tr>
-        <td colspan="2"><strong>Chegada:</strong> ________ &nbsp;&nbsp;&nbsp; <strong>Saída:</strong> ________</td>
-    </tr>
-</table>
+    <!-- Parâmetros Avaliados -->
+    <div class="page">
+        <h2>Parâmetros Avaliados por Tipo de Equipamento</h2>
+        <table class="equipment-table">
+            <thead>
+                <tr>
+                    <th>Tipo de Equipamento</th>
+                    <th>Parâmetro Avaliado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ve in equipamentos %}
+                    {% for avaliacao in ve.avaliacoes.all %}
+                    <tr>
+                        <td>{{ ve.equipamento.categoria.nome }}</td>
+                        <td>{{ avaliacao.parametro.nome }}</td>
+                    </tr>
+                    {% endfor %}
+                {% empty %}
+                    <tr><td colspan="2">Nenhum parâmetro encontrado</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
-<p class="section-title">DECLARAÇÃO</p>
-<p>
-    Declaro que recebi e estou ciente das condições e recomendações descritas neste relatório. As pendências identificadas foram repassadas para conhecimento e resolução.
-</p>
+    <!-- Última Página -->
+    <div class="page">
+        <h2>Horário de Atendimento</h2>
+        <table class="table-atendimento">
+            <thead>
+                <tr><th>Atividade</th><th>Dia</th><th>Horário</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Chegada ao Cliente</td>
+                    <td>{{ vistoria.data|date:"d/m/Y" }}</td>
+                    <td>{{ vistoria.horario_inicio|time:"H:i" }}</td>
+                </tr>
+                <tr>
+                    <td>Saída do Cliente</td>
+                    <td>{{ vistoria.data|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if vistoria.status == "finalizada" and vistoria.horario_fim %}
+                            {{ vistoria.horario_fim|time:"H:i" }}
+                        {% else %} --- {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
-<p class="section-title">PRÓXIMOS PASSOS</p>
-<ul>
-    <li>Visualize este relatório no portal da Proxion</li>
-    <li>Assista ao vídeo explicativo com detalhes da vistoria</li>
-    <li>Para dúvidas, entre em contato: <strong>suporte@proxion.com.br</strong></li>
-</ul>
+        <h2>Analista Responsável</h2>
+        <div class="technical-signature">
+            {% if vistoria.realizada_por.assinatura %}
+                <img src="{{ vistoria.realizada_por.assinatura.path }}" alt="assinatura" style="max-height:80px;"><br>
+            {% endif %}
+            <p>_______________________________________</p>
+            <strong>{{ vistoria.realizada_por.nome_completo }}</strong>
+        </div>
 
-<p style="margin-top: 40px; text-align: center;">
-    <em>Relatório gerado automaticamente pelo sistema Proxion.</em>
-</p>
-
+        <h2>Aprovação</h2>
+        <p>“Declaro estar ciente e concordar com as condições apresentadas neste relatório”.</p>
+        <div class="content-signature">
+            <div class="signature-left">
+                <p>Nome:</p>
+                <p>RG:</p>
+                <p>Cargo:</p>
+                <p>Data:</p>
+            </div>
+            <div class="signature-right">
+                <p>_______________________________________</p>
+                <p>Assinatura do Responsável</p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

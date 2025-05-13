@@ -10,6 +10,8 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from io import BytesIO
 
+from django.conf import settings
+
 def listar_vistorias(request):
     vistorias = Vistoria.objects.all()
     return render(request, 'vistorias/listar_vistorias.html', {'vistorias': vistorias})
@@ -132,6 +134,7 @@ def gerar_relatorio_vistoria(request, pk):
     context = {
         'vistoria': vistoria,
         'equipamentos': equipamentos,
+        'BASE_DIR': settings.BASE_DIR,
     }
 
     template = get_template(template_path)

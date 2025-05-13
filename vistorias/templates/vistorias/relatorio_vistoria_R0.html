@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        h2 { text-align: center; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #333; padding: 6px; text-align: left; }
+        .no-border td { border: none; }
+        .section-title { margin-top: 30px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h2>RELATÓRIO DE VISTORIA PREVENTIVA</h2>
+
+<table class="no-border">
+    <tr>
+        <td><strong>Cliente:</strong> {{ vistoria.cliente.nome_fantasia }}</td>
+        <td><strong>Código:</strong> {{ vistoria.cliente.sigla }}</td>
+    </tr>
+    <tr>
+        <td><strong>Responsável:</strong> {{ vistoria.cliente.responsavel|default:"---" }}</td>
+        <td><strong>E-mail:</strong> {{ vistoria.cliente.email|default:"---" }}</td>
+    </tr>
+    <tr>
+        <td><strong>Telefone:</strong> {{ vistoria.cliente.telefone|default:"---" }}</td>
+        <td><strong>Cidade:</strong> {{ vistoria.cliente.cidade|default:"---" }}</td>
+    </tr>
+    <tr>
+        <td><strong>Data:</strong> {{ vistoria.data|date:"d/m/Y" }}</td>
+        <td><strong>Analista:</strong> {{ vistoria.realizada_por.nome_completo }}</td>
+    </tr>
+</table>
+
+<p class="section-title">EQUIPAMENTOS VISTORIADOS</p>
+<table>
+    <thead>
+        <tr>
+            <th>Tipo</th>
+            <th>Modelo</th>
+            <th>Nº de Série</th>
+            <th>Status</th>
+            <th>Observações</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ve in equipamentos %}
+        <tr>
+            <td>{{ ve.equipamento.categoria.nome }}</td>
+            <td>{{ ve.equipamento.modelo }}</td>
+            <td>{{ ve.equipamento.numero_serie }}</td>
+            <td>{{ ve.get_status_final_display }}</td>
+            <td>{{ ve.observacoes|default:"-" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<p class="section-title">OBSERVAÇÕES GERAIS</p>
+<p>{{ vistoria.observacoes_gerais|default:"Nenhuma observação registrada." }}</p>
+
+<p class="section-title">ASSINATURA</p>
+<table class="no-border">
+    <tr>
+        <td><strong>Nome:</strong> _________________________________</td>
+        <td><strong>RG:</strong> ___________________</td>
+    </tr>
+    <tr>
+        <td><strong>Cargo:</strong> __________________________________________</td>
+        <td><strong>Data:</strong> ____/____/________</td>
+    </tr>
+    <tr>
+        <td colspan="2"><strong>Chegada:</strong> ________ &nbsp;&nbsp;&nbsp; <strong>Saída:</strong> ________</td>
+    </tr>
+</table>
+
+<p class="section-title">DECLARAÇÃO</p>
+<p>
+    Declaro que recebi e estou ciente das condições e recomendações descritas neste relatório. As pendências identificadas foram repassadas para conhecimento e resolução.
+</p>
+
+<p class="section-title">PRÓXIMOS PASSOS</p>
+<ul>
+    <li>Visualize este relatório no portal da Proxion</li>
+    <li>Assista ao vídeo explicativo com detalhes da vistoria</li>
+    <li>Para dúvidas, entre em contato: <strong>suporte@proxion.com.br</strong></li>
+</ul>
+
+<p style="margin-top: 40px; text-align: center;">
+    <em>Relatório gerado automaticamente pelo sistema Proxion.</em>
+</p>
+
+</body>
+</html>
