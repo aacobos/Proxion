@@ -1,39 +1,71 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block extrahead %}
-    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
-{% endblock %}
-
-{% block title %}
-    Lista de Vistorias
-{% endblock %}
+{% block title %}Lista de Vistorias{% endblock %}
 
 {% block header %}
-    <h1>Lista de Vistorias</h1>
+<h1>Lista de Vistorias</h1>
 {% endblock %}
 
 {% block content %}
-<div class="form-container">
-    <a href="{% url 'vistorias:criar_vistoria' %}">
-        <button type="button">Nova Vistoria</button>
-    </a>
-    <a href="{% url 'core:dashboard' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
+<br>
+<h2>Lista de Vistorias</h2>
 
-    <ul style="margin-top: 20px;">
-        {% for vistoria in vistorias %}
-            <li>
-                <strong>{{ vistoria }}</strong>
-                <br>
-                <a href="{% url 'vistorias:detalhes_vistoria' vistoria.id %}">Detalhes</a>
-                {% if vistoria.status != 'finalizada' %}
-                    | <a href="{% url 'vistorias:equipamentos_para_vistoria' vistoria.id %}">Continuar</a>
-                    | <a href="{% url 'vistorias:finalizar_vistoria' vistoria.id %}">Finalizar</a>
-                {% endif %}
-            </li>
-        {% empty %}
-            <li>Nenhuma vistoria registrada.</li>
-        {% endfor %}
-    </ul>
+<!-- AÇÕES E PESQUISA -->
+<div class="top-bar">
+    <div class="left-actions">
+        <a href="{% url 'vistorias:criar_vistoria' %}" class="btn">Nova Vistoria</a>
+    </div>
+
+    <form method="get" action="{% url 'vistorias:listar_vistorias' %}" class="center-search">
+        <input
+            type="text"
+            name="q"
+            value="{{ termo_busca|default:'' }}"
+            placeholder="Buscar por descrição ou status"
+        />
+        <button type="submit" class="btn">Buscar</button>
+    </form>
+
+    <div class="right-actions">
+        <a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>
+
+<!-- TABELA COM CAMPOS REQUERIDOS -->
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Cliente</th>
+                <th>Data da Vistoria</th>
+                <th>Quantidade de Equipamentos</th>
+                <th>Status</th>
+                <th>Usuário</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vistoria in vistorias %}
+            <tr>
+                <td>{{ vistoria.cliente }}</td>
+                <td>{{ vistoria.data|date:"d/m/Y" }}</td>
+                <td>{{ vistoria.qtd_equipamentos }}</td>
+                <td>{{ vistoria.get_status_display }}</td>
+                <td>{{ vistoria.realizada_por }}</td>
+                <td class="table-actions">
+                    <a href="{% url 'vistorias:detalhes_vistoria' vistoria.id %}">Detalhes</a>
+                    {% if vistoria.status == 'finalizada' %}
+                    | <a href="{% url 'vistorias:gerar_relatorio' vistoria.id %}">Relatório</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Nenhuma vistoria registrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

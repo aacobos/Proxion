@@ -1,72 +1,81 @@
 {% extends 'base.html' %}
 
-{% block title %}
-    Lista de Clientes
-{% endblock %}
+{% block title %}Clientes{% endblock %}
 
 {% block header %}
-    <h1>Lista de Clientes</h1>
+<h1>Lista de Clientes</h1>
 {% endblock %}
 
 {% block content %}
+<br>
 <h2>Clientes Cadastrados</h2>
 
-<form method="get" action="{% url 'clientes:listar_clientes' %}" style="margin-bottom: 20px;">
-    <input type="text" name="q" placeholder="Buscar por empresa, CNPJ ou código"
-           value="{{ query }}" style="padding: 6px; width: 300px;">
-    <button type="submit" style="padding: 6px;">Buscar</button>
-    {% if query %}
-        <a href="{% url 'clientes:listar_clientes' %}" style="margin-left: 10px;">Limpar</a>
-    {% endif %}
-</form>
+<!-- AÇÕES E PESQUISA -->
+<div class="top-bar">
+    <!-- Botão à esquerda -->
+    <div class="left-actions">
+        <a href="{% url 'clientes:cadastrar_cliente' %}" class="btn">Cadastrar Cliente</a>
+    </div>
 
-<table border="1" cellspacing="0" cellpadding="8">
-    <thead>
-        {% for col, label in colunas %}
-            <th>
-                <a href="?{% if query %}q={{ query }}&{% endif %}sort={{ col }}&direction={% if sort == col and direction == 'asc' %}desc{% else %}asc{% endif %}">
-                    {{ label }}
-                    {% if sort == col %}
-                        {% if direction == 'asc' %}▲{% else %}▼{% endif %}
-                    {% endif %}
-                </a>
-            </th>
-        {% endfor %}
-            <th>Última Vistoria</th>
-            <th>Quantidade Equipamentos</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for cliente in clientes %}
-        <tr>
-            <td><a href="{% url 'clientes:detalhes_cliente' cliente.id %}">{{ cliente.nome_fantasia }}</a></td>
-            <td>{{ cliente.sigla }}</td>
-            <td>{{ cliente.cnpj }}</td>
-            <td>{{ cliente.responsavel }}</td>
-            <td>{{ cliente.numero_contrato }}</td>
-            <td>{{ cliente.ultima_vistoria_data }}</td>
-            <td>{{ cliente.total_equipamentos }}</td>
-            <td>
-                <a href="{% url 'clientes:editar_cliente' cliente.id %}">Editar</a>
-                <form method="POST" action="{% url 'clientes:excluir_cliente' cliente.id %}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este cliente?');">
-                    {% csrf_token %}
-                    <button type="submit" style="background:none;border:none;color:blue;cursor:pointer;">Excluir</button>
-                </form>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5">Nenhum cliente cadastrado.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <!-- Pesquisa no centro -->
+    <form method="get" action="{% url 'clientes:listar_clientes' %}" class="center-search">
+        <input
+            type="text"
+            name="q"
+            value="{{ query|default:'' }}"
+            placeholder="Buscar por empresa, CNPJ ou código"
+        />
+        <button type="submit" class="btn">Buscar</button>
+        {% if query %}
+            <a href="{% url 'clientes:listar_clientes' %}" class="btn btn-secondary">Limpar</a>
+        {% endif %}
+    </form>
 
-<br><hr>
-<div>
-    <a href="{% url 'clientes:cadastrar_cliente' %}" class="btn btn-primary mb-3">Cadastrar Cliente</a>
-    <a href="{% url 'core:dashboard' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
+    <!-- Botão à direita -->
+    <div class="right-actions">
+        <a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Voltar</a>
+    </div>
 </div>
 
+<!-- TABELA BONITA -->
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>                
+                <th>Cliente</th>
+                <th>Sigla</th>
+                <th>CNPJ</th>
+                <th>Responsável</th>
+                <th>Telefone</th>
+                <th>Última Vistoria</th>
+                <th>Quantidade Equipamentos</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr>
+                <td><a href="{% url 'clientes:detalhes_cliente' cliente.id %}">{{ cliente.nome_fantasia }}</a></td>
+                <td>{{ cliente.sigla }}</td>
+                <td>{{ cliente.cnpj }}</td>
+                <td>{{ cliente.responsavel }}</td>
+                <td>{{ cliente.numero_contrato }}</td>
+                <td>{{ cliente.ultima_vistoria_data|date:"d/m/Y" }}</td>
+                <td>{{ cliente.total_equipamentos }}</td>
+                <td class="table-actions">
+                    <a href="{% url 'clientes:editar_cliente' cliente.id %}">Editar</a>
+                    <form method="POST" action="{% url 'clientes:excluir_cliente' cliente.id %}" onsubmit="return confirm('Tem certeza que deseja excluir este cliente?');">
+                        {% csrf_token %}
+                        <button type="submit">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8">Nenhum cliente cadastrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

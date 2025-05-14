@@ -3,10 +3,26 @@ from .models import Equipamento, CategoriaEquipamento, ParametroEquipamento
 from .forms import EquipamentoForm, ParametroEquipamentoForm
 from django.contrib import messages
 
+from django.db.models import Q
+
+## ----- EQUIPAMENTOS -----
 # Listar equipamentos
 def listar_equipamentos(request):
-    equipamentos = Equipamento.objects.all()
-    return render(request, 'equipamentos/listar_equipamentos.html', {'equipamentos': equipamentos})
+    termo_busca = request.GET.get('q', '')
+    if termo_busca:
+        equipamentos = Equipamento.objects.filter(
+            Q(nome__icontains=termo_busca) |
+            Q(numero_serie__icontains=termo_busca) |
+            Q(categoria__nome__icontains=termo_busca) |
+            Q(status__icontains=termo_busca) |
+            Q(cliente__nome_fantasia__icontains=termo_busca)
+        )
+    else:
+        equipamentos = Equipamento.objects.all()
+    return render(request, 'equipamentos/listar_equipamentos.html', {
+        'equipamentos': equipamentos,
+        'termo_busca': termo_busca
+    })
 
 # Criar novo equipamento
 def cadastrar_equipamento(request):
@@ -47,10 +63,19 @@ def excluir_equipamento(request, pk):
         return redirect('equipamentos:listar_equipamentos')
     return render(request, 'equipamentos/confirmar_exclusao.html', {'equipamento': equipamento})
 
+## ----- CATEGORIAS -----
 # Listar categorias
 def listar_categorias(request):
-    categorias = CategoriaEquipamento.objects.all()
-    return render(request, 'categorias/listar_categorias.html', {'categorias': categorias})
+    termo_busca = request.GET.get('q', '')
+    if termo_busca:
+        categorias = CategoriaEquipamento.objects.filter(nome__icontains=termo_busca)
+    else:
+        categorias = CategoriaEquipamento.objects.all()
+    return render(request, 'categorias/listar_categorias.html', {
+        'categorias': categorias,
+        'termo_busca': termo_busca
+    })
+
 
 # Cadastrar nova categoria
 def cadastrar_categoria(request):
@@ -110,10 +135,18 @@ def excluir_categoria(request, pk):
         return redirect('equipamentos:listar_categorias')
     return render(request, 'categorias/confirmar_exclusao.html', {'categoria': categoria})
 
+## ----- PARÂMETROS -----
 # Listar parâmetros
 def listar_parametros(request):
-    parametros = ParametroEquipamento.objects.all()
-    return render(request, 'parametros/listar_parametros.html', {'parametros': parametros})
+    termo_busca = request.GET.get('q', '')
+    if termo_busca:
+        parametros = ParametroEquipamento.objects.filter(nome__icontains=termo_busca)
+    else:
+        parametros = ParametroEquipamento.objects.all()
+    return render(request, 'parametros/listar_parametros.html', {
+        'parametros': parametros,
+        'termo_busca': termo_busca
+    })
 
 # Cadastrar parâmetros
 def cadastrar_parametro(request):

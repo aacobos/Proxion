@@ -1,58 +1,73 @@
 {% extends 'base.html' %}
 
-{% block title %}
-    Lista de Usuários
-{% endblock %}
+{% block title %}Lista de Usuários{% endblock %}
 
 {% block header %}
-    <h1>Lista de Usuários</h1>
+<h1>Lista de Usuários</h1>
 {% endblock %}
 
 {% block content %}
+<br>
 <h2>Usuários Cadastrados</h2>
 
-<form method="get" style="margin-bottom: 16px;">
-    <input type="text" name="busca" placeholder="Buscar por nome, CPF ou e-mail" value="{{ busca }}">
-    <button type="submit">Buscar</button>
-</form>
 
-<table border="1" cellspacing="0" cellpadding="8">
-    <thead>
-        <tr>
-            <th><a href="?busca={{ busca }}&ordenar_por=nome_completo">Nome</a></th>
-            <th><a href="?busca={{ busca }}&ordenar_por=cpf">CPF</a></th>
-            <th><a href="?busca={{ busca }}&ordenar_por=email">Email</a></th>
-            <th><a href="?busca={{ busca }}&ordenar_por=perfil">Perfil</a></th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for usuario in usuarios %}
-        <tr>
-            <td><a href="{% url 'usuarios:detalhes_usuario' usuario.id %}">{{ usuario.nome_completo }}</a></td>
-            <td>{{ usuario.cpf }}</td>
-            <td>{{ usuario.email }}</td>
-            <td>{{ usuario.get_perfil_display }}</td>
-            <td>
-                <a href="{% url 'usuarios:editar_usuario' usuario.id %}">Editar</a>
-                <form method="POST" action="{% url 'usuarios:excluir_usuario' usuario.id %}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
-                    {% csrf_token %}
-                    <button type="submit" style="background:none;border:none;color:blue;cursor:pointer;">Excluir</button>
-                </form>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="5">Nenhum usuário cadastrado.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<!-- AÇÕES E PESQUISA -->
+<div class="top-bar">
+    <!-- Botão à esquerda -->
+    <div class="left-actions">
+        <a href="{% url 'usuarios:cadastrar_usuario' %}" class="btn">Cadastrar Usuário</a>
+    </div>
 
-<br><hr>
-<div>
-    <a href="{% url 'usuarios:cadastrar_usuario' %}" class="btn btn-primary mb-3">Cadastrar Usuário</a>
-    <a href="{% url 'core:dashboard' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
+    <!-- Pesquisa no centro -->
+    <form method="get" action="{% url 'usuarios:listar_usuarios' %}" class="center-search">
+        <input
+            type="text"
+            name="busca"
+            value="{{ busca|default:'' }}"
+            placeholder="Buscar por nome, CPF ou e-mail"
+        />
+        <button type="submit" class="btn">Buscar</button>
+    </form>
+
+    <!-- Botão à direita -->
+    <div class="right-actions">
+        <a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Voltar</a>
+    </div>
 </div>
 
+<!-- TABELA BONITA -->
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Email</th>
+                <th>Perfil</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td><a href="{% url 'usuarios:detalhes_usuario' usuario.id %}">{{ usuario.nome_completo }}</a></td>
+                <td>{{ usuario.cpf }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>{{ usuario.get_perfil_display }}</td>
+                <td class="table-actions">
+                    <a href="{% url 'usuarios:editar_usuario' usuario.id %}">Editar</a>
+                    <form method="POST" action="{% url 'usuarios:excluir_usuario' usuario.id %}" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
+                        {% csrf_token %}
+                        <button type="submit">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Nenhum usuário cadastrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

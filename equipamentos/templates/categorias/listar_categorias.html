@@ -1,50 +1,64 @@
 {% extends 'base.html' %}
 
-{% block title %}
-    Lista de Categorias
-{% endblock %}
+{% block title %}Lista de Categorias{% endblock %}
 
 {% block header %}
-    <h1>Lista de Categorias</h1>
+<h1>Lista de Categorias</h1>
 {% endblock %}
 
 {% block content %}
-<h2>Categorias Cadastradas</h2>
+<br>
+<h2>Lista de Categorias</h2>
 
-<table border="1" cellspacing="0" cellpadding="8">
-    <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for categoria in categorias %}
-        <tr>
-            <td>
-                <a href="{% url 'equipamentos:detalhes_categoria' categoria.id %}">
-                    {{ categoria.nome }}
-                </a>
-            </td>
-            <td>
-                <a href="{% url 'equipamentos:editar_categoria' categoria.id %}">Editar</a>
-                <form method="POST" action="{% url 'equipamentos:excluir_categoria' categoria.id %}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir esta categoria?');">
-                    {% csrf_token %}
-                    <button type="submit" style="background:none;border:none;color:blue;cursor:pointer;">Excluir</button>
-                </form>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="3">Nenhuma categoria cadastrada.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<!-- AÇÕES E PESQUISA -->
+<div class="top-bar">
+    <!-- Botão à esquerda -->
+    <div class="left-actions">
+        <a href="{% url 'equipamentos:cadastrar_categoria' %}" class="btn">Cadastrar Categoria</a>
+    </div>
 
-<br><hr>
-<div>
-    <a href="{% url 'equipamentos:cadastrar_categoria' %}" class="btn btn-primary mb-3">Cadastrar Categoria</a>
-    <a href="{% url 'core:dashboard' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
+    <!-- Pesquisa no centro -->
+    <form method="get" action="{% url 'equipamentos:listar_categorias' %}" class="center-search">
+        <input
+            type="text"
+            name="q"
+            value="{{ termo_busca|default:'' }}"
+            placeholder="Buscar por nome da categoria"
+        />
+        <button type="submit" class="btn">Buscar</button>
+    </form>
+
+    <!-- Botão à direita -->
+    <div class="right-actions">
+        <a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>
+
+<!-- TABELA BONITA -->
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Categoria de Equipamento</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for categoria in categorias %}
+            <tr>
+                <td><a href="{% url 'equipamentos:detalhes_categoria' categoria.id %}">{{ categoria.nome }}</a></td>
+                <td class="table-actions">
+                    <a href="{% url 'equipamentos:editar_categoria' categoria.id %}">Editar</a>
+                    <form method="POST" action="{% url 'equipamentos:excluir_categoria' categoria.id %}" onsubmit="return confirm('Tem certeza que deseja excluir esta categoria?');" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="2">Nenhuma categoria cadastrada.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

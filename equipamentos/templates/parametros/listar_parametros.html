@@ -1,49 +1,68 @@
 {% extends 'base.html' %}
 
-{% block title %}
-    Lista de Parâmetros
-{% endblock %}
+{% block title %}Lista de Parâmetros{% endblock %}
 
 {% block header %}
-    <h1>Lista de Parâmetros</h1>
+<h1>Lista de Parâmetros</h1>
 {% endblock %}
 
 {% block content %}
-<h2>Parâmetros Cadastrados</h2>
+<br>
+<h2>Lista de Parâmetros</h2>
 
-<div>
-    <a href="{% url 'equipamentos:cadastrar_parametro' %}" class="btn btn-primary mb-3">Cadastrar Parâmetro</a>
-    <a href="{% url 'core:dashboard' %}" style="display:block; margin-top:10px;">Voltar</a>
+<!-- AÇÕES E PESQUISA -->
+<div class="top-bar">
+    <!-- Botão à esquerda -->
+    <div class="left-actions">
+        <a href="{% url 'equipamentos:cadastrar_parametro' %}" class="btn">Cadastrar Parâmetro</a>
+    </div>
+
+    <!-- Pesquisa no centro -->
+    <form method="get" action="{% url 'equipamentos:listar_parametros' %}" class="center-search">
+        <input
+            type="text"
+            name="q"
+            value="{{ termo_busca|default:'' }}"
+            placeholder="Buscar parâmetro..."
+        />
+        <button type="submit" class="btn">Buscar</button>
+    </form>
+
+    <!-- Botão à direita -->
+    <div class="right-actions">
+        <a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Voltar</a>
+    </div>
 </div>
 
-<table border="1" cellspacing="0" cellpadding="8">
-    <thead>
-        <tr>
-            <th>Nome</th>
-            <th>O que avaliar</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for parametro in parametros %}
-        <tr>
-            <td><a href="{% url 'equipamentos:detalhes_parametro' parametro.id %}">{{ parametro.nome }}</a></td>
-            <td>{{ parametro.avaliacao_ajuda }}</td>
-            <td>
-                <a href="{% url 'equipamentos:editar_parametro' parametro.id %}">Editar</a>
-                <form method="POST" action="{% url 'equipamentos:excluir_parametro' parametro.id %}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este parâmetro?');">
-                    {% csrf_token %}
-                    <button type="submit" style="background:none;border:none;color:blue;cursor:pointer;">Excluir</button>
-                </form>
-            </td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="3">Nenhum parâmetro cadastrado.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<br><hr>
+<!-- TABELA BONITA -->
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>O que avaliar</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for parametro in parametros %}
+            <tr>
+                <td><a href="{% url 'equipamentos:detalhes_parametro' parametro.id %}">{{ parametro.nome }}</a></td>
+                <td>{{ parametro.avaliacao_ajuda }}</td>
+                <td class="table-actions">
+                    <a href="{% url 'equipamentos:editar_parametro' parametro.id %}">Editar</a>
+                    <form method="POST" action="{% url 'equipamentos:excluir_parametro' parametro.id %}" onsubmit="return confirm('Tem certeza que deseja excluir este parâmetro?');">
+                        {% csrf_token %}
+                        <button type="submit">Excluir</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">Nenhum parâmetro cadastrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

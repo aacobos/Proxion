@@ -12,9 +12,16 @@ from io import BytesIO
 
 from django.conf import settings
 
+from django.db.models import Count
+
 def listar_vistorias(request):
-    vistorias = Vistoria.objects.all()
+    # Busca vistorias com a contagem de equipamentos vistoriados relacionados
+    vistorias = Vistoria.objects.annotate(
+        qtd_equipamentos=Count('equipamentos_vistoriados')
+    ).all()
+
     return render(request, 'vistorias/listar_vistorias.html', {'vistorias': vistorias})
+
 
 def criar_vistoria(request):
     if request.method == 'POST':
