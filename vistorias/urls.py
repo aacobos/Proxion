@@ -11,5 +11,4 @@ urlpatterns = [
     path('<int:vistoria_id>/equipamento/<int:equipamento_id>/', views.vistoria_equipamento_form, name='vistoria_equipamento_form'),
     path('<int:vistoria_id>/finalizar/', views.finalizar_vistoria, name='finalizar_vistoria'),
     path('<int:pk>/relatorio/', views.gerar_relatorio_vistoria, name='gerar_relatorio'),
-
 ]

@@ -131,28 +131,25 @@ def detalhes_vistoria(request, vistoria_id):
         'equipamentos': equipamentos
     })
 
+# Gerar Relatório
+from itertools import islice
+
+def agrupar_em(lista, tamanho):
+    """Divide uma lista em sublistas com tamanho máximo `tamanho`."""
+    return [lista[i:i + tamanho] for i in range(0, len(lista), tamanho)]
+
 def gerar_relatorio_vistoria(request, pk):
     vistoria = get_object_or_404(Vistoria, pk=pk)
-    equipamentos = VistoriaEquipamento.objects.filter(vistoria=vistoria).select_related('equipamento')
 
-    template_path = 'vistorias/relatorio_vistoria.html'
-    context = {
+    # Pegando os equipamentos relacionados corretamente
+    equipamentos = list(vistoria.equipamentos_vistoriados.select_related(
+        'equipamento', 'equipamento__categoria'
+    ).prefetch_related('avaliacoes', 'avaliacoes__parametro'))
+
+    # Agrupar os equipamentos em blocos de até 15
+    grupos_equipamentos = agrupar_em(equipamentos, 15)
+
+    return render(request, 'vistorias/relatorio_vistoria.html', {
         'vistoria': vistoria,
-        'equipamentos': equipamentos,
-        'BASE_DIR': settings.BASE_DIR,
-    }
-
-    template = get_template(template_path)
-    html = template.render(context)
-
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'inline; filename="relatorio_vistoria_{vistoria.pk}.pdf"'
-
-    result = BytesIO()
-    pisa_status = pisa.CreatePDF(html, dest=result)
-
-    if pisa_status.err:
-        return HttpResponse('Erro ao gerar PDF', status=500)
-
-    response.write(result.getvalue())
-    return response
+        'grupos_equipamentos': grupos_equipamentos,
+    })
