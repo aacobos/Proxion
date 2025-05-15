@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #000;
+        }
+        h1, h2, h3 {
+            text-align: center;
+            margin: 10px 0;
+        }
+        .info-vistoria {
+            margin-bottom: 20px;
+        }
+        .info-vistoria p {
+            margin: 4px 0;
+        }
+        .equipamento-bloco {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 6px;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 4px;
+            text-align: left;
+        }
+        th {
+            background-color: #ddd;
+        }
+        .page-break {
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+    <h1>Relatório de Vistoria</h1>
+
+    <div class="info-vistoria">
+        <p><strong>Cliente:</strong> {{ vistoria.cliente }}</p>
+        <p><strong>Unidade:</strong> {{ vistoria.unidade }}</p>
+        {% if vistoria.sublocal %}
+            <p><strong>Sublocal:</strong> {{ vistoria.sublocal }}</p>
+        {% endif %}
+        <p><strong>Data:</strong> {{ vistoria.data|date:"d/m/Y" }}</p>
+        <p><strong>Status:</strong> {{ vistoria.get_status_display }}</p>
+        <p><strong>Realizada por:</strong> {{ vistoria.realizada_por }}</p>
+    </div>
+
+    {% for grupo in grupos_equipamentos %}
+        {% for ve in grupo %}
+        <div class="equipamento-bloco">
+            <h3>{{ ve.equipamento.nome }}</h3>
+            <p><strong>Categoria:</strong> {{ ve.equipamento.categoria }}</p>
+            <p><strong>Status final:</strong> {{ ve.get_status_final_display }}</p>
+            {% if ve.observacoes %}
+                <p><strong>Observações gerais:</strong> {{ ve.observacoes }}</p>
+            {% endif %}
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parâmetro</th>
+                        <th>Situação</th>
+                        <th>Gravidade</th>
+                        <th>Observações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for avaliacao in ve.avaliacoes.all %}
+                    <tr>
+                        <td>{{ avaliacao.parametro.nome }}</td>
+                        <td>{{ avaliacao.get_situacao_display }}</td>
+                        <td>
+                            {% if avaliacao.situacao == 'danificado' %}
+                                {{ avaliacao.get_gravidade_display }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>{{ avaliacao.observacoes }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+        <div class="page-break"></div>
+    {% endfor %}
+
+    <p><strong>Observações gerais da vistoria:</strong> {{ vistoria.observacoes_gerais }}</p>
+</body>
+</html>

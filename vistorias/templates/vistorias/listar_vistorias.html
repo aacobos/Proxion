@@ -22,7 +22,7 @@
             type="text"
             name="q"
             value="{{ termo_busca|default:'' }}"
-            placeholder="Buscar por descrição ou status"
+            placeholder="Buscar por cliente, status, unidade ou usuário"
         />
         <button type="submit" class="btn">Buscar</button>
     </form>
@@ -56,8 +56,12 @@
                 <td class="table-actions">
                     <a href="{% url 'vistorias:detalhes_vistoria' vistoria.id %}">Detalhes</a>
                     {% if vistoria.status == 'finalizada' %}
-                    | <a href="{% url 'vistorias:gerar_relatorio' vistoria.id %}">Relatório</a>
+                    | <a href="{% url 'vistorias:gerar_relatorio' vistoria.id %}" target="_blank">Relatório</a>
                     {% endif %}
+                    <form method="POST" action="{% url 'vistorias:excluir_vistoria' vistoria.id %}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir esta vistoria?');">
+                        {% csrf_token %}
+                        <button type="submit">Excluir</button>
+                    </form>
                 </td>
             </tr>
             {% empty %}

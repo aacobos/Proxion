@@ -14,13 +14,28 @@ from django.conf import settings
 
 from django.db.models import Count
 
+from django.db.models import Q
+
 def listar_vistorias(request):
-    # Busca vistorias com a contagem de equipamentos vistoriados relacionados
+    termo = request.GET.get('q', '').strip()
+
     vistorias = Vistoria.objects.annotate(
         qtd_equipamentos=Count('equipamentos_vistoriados')
-    ).all()
+    )
 
-    return render(request, 'vistorias/listar_vistorias.html', {'vistorias': vistorias})
+    if termo:
+        vistorias = vistorias.filter(
+            Q(cliente__nome_fantasia__icontains=termo) |
+            Q(status__icontains=termo) |
+            Q(unidade__icontains=termo) |
+            Q(sublocal__icontains=termo) |
+            Q(realizada_por__nome_completo__icontains=termo)
+        )
+
+    return render(request, 'vistorias/listar_vistorias.html', {
+        'vistorias': vistorias,
+        'termo_busca': termo,
+    })
 
 
 def criar_vistoria(request):
@@ -35,6 +50,18 @@ def criar_vistoria(request):
     else:
         form = VistoriaForm()
     return render(request, 'vistorias/criar_vistoria.html', {'form': form})
+
+
+def excluir_vistoria(request, vistoria_id):
+    vistoria = get_object_or_404(Vistoria, id=vistoria_id)
+
+    if request.method == 'POST':
+        vistoria.delete()
+        messages.success(request, 'Vistoria excluída com sucesso.')
+        return redirect('vistorias:listar_vistorias')
+
+    return render(request, 'vistorias/confirmar_exclusao.html', {'vistoria': vistoria})
+
 
 def equipamentos_para_vistoria(request, vistoria_id):
     vistoria = get_object_or_404(Vistoria, id=vistoria_id)
