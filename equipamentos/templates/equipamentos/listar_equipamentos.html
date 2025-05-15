@@ -44,6 +44,7 @@
                 <th>Categoria</th>
                 <th>Status</th>
                 <th>Cliente</th>
+                <th>Última vistoria</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -55,6 +56,13 @@
                 <td>{{ equipamento.categoria }}</td>
                 <td>{{ equipamento.get_status_display }}</td>
                 <td>{{ equipamento.cliente.nome_fantasia }}</td>
+                <td>
+                    {% if equipamento.ultima_vistoria %}
+                        {{ equipamento.ultima_vistoria|date:"d/m/Y" }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
                 <td class="table-actions">
                     <a href="{% url 'equipamentos:editar_equipamento' equipamento.id %}">Editar</a>
                     <form method="POST" action="{% url 'equipamentos:excluir_equipamento' equipamento.id %}" onsubmit="return confirm('Tem certeza que deseja excluir este equipamento?');">

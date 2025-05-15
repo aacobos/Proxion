@@ -2,41 +2,101 @@
 {% load static %}
 
 {% block extrahead %}
-    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
+<style>
+    .card-form {
+        background-color: var(--card-background);
+        padding: 30px;
+        border-radius: 8px;
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-form h2 {
+        margin-bottom: 10px;
+        color: var(--primary-color);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    .checkbox-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 10px;
+    }
+
+    .checkbox-item {
+        background-color: var(--subcard-background);
+        padding: 10px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .checkbox-item.selecionado {
+        background-color: #d1f7d1;
+    }
+
+    .parametro-nome {
+        font-weight: 500;
+    }
+
+    .parametro-gravidade {
+        font-size: 12px;
+        color: var(--text-secondary);
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+</style>
 {% endblock %}
 
-{% block title %}
-    Detalhes da Categoria
-{% endblock %}
+{% block title %}Detalhes da Categoria{% endblock %}
 
 {% block header %}
-    <h1>Detalhes da Categoria</h1>
+<h1>Detalhes da Categoria</h1>
 {% endblock %}
 
 {% block content %}
-<div class="form-container">
+<div class="card-form">
     <h2>Informações da Categoria</h2>
 
-    <label>Nome:</label>
-    <input type="text" value="{{ categoria.nome }}" readonly>
+    <div class="form-group">
+        <label>Nome da Categoria:</label>
+        <input type="text" value="{{ categoria.nome }}" readonly>
+    </div>
 
-    <label>Parâmetros:</label>
+    <h4>Parâmetros Associados:</h4>
     {% if categoria.parametros.all %}
-        <ul>
-        {% for parametro in categoria.parametros.all %}
-            <li>{{ parametro.nome }} ({{ parametro.get_gravidade_display }})</li>
-        {% endfor %}
-        </ul>
+        <div class="checkbox-grid">
+            {% for parametro in categoria.parametros.all|dictsort:"nome" %}
+                <div class="checkbox-item selecionado">
+                    <span class="parametro-nome">{{ parametro.nome }}</span>
+                </div>
+            {% endfor %}
+        </div>
     {% else %}
         <p>Nenhum parâmetro associado.</p>
     {% endif %}
 
-    <a href="{% url 'equipamentos:editar_categoria' categoria.pk %}">
-        <button type="button">Editar</button>
-    </a>
-
-    <a href="{% url 'equipamentos:listar_categorias' %}">
-        <button type="button" style="margin-top: 10px;">Voltar</button>
-    </a>
+    <div class="form-actions">
+        <a href="{% url 'equipamentos:editar_categoria' categoria.pk %}" class="btn btn-primary">Editar</a>
+        <a href="{% url 'equipamentos:listar_categorias' %}" class="btn btn-secondary">Voltar</a>
+    </div>
 </div>
 {% endblock %}

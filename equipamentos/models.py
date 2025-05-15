@@ -7,12 +7,11 @@ from usuarios.models import Usuario
 class ParametroEquipamento(models.Model):
     nome = models.CharField(max_length=100, unique=True)
 
-    
-
-    avaliacao_ajuda = models.TextField(
+    avaliacao_ajuda = models.CharField(
+        max_length=300,
         blank=True,
-        verbose_name="Como avaliar",
-        help_text="Descreva como o analista deve avaliar este parâmetro."
+        verbose_name="Como avaliar o parâmetro",
+        
     )
 
     def __str__(self):

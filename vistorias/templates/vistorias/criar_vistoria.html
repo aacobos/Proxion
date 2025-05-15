@@ -15,14 +15,71 @@
 
 {% block content %}
 <div class="form-container">
-    <form method="post">
+    <form method="post" id="form-vistoria">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Criar</button>
+        <!-- Exibe o campo cliente (select) -->
+        <div>
+            {{ form.cliente.label_tag }}<br>
+            {{ form.cliente }}
+        </div>
+
+        <!-- Campo unidade (editable) -->
+        <div style="margin-top: 15px;">
+            <label for="id_unidade">Unidade:</label><br>
+            <input type="text" id="id_unidade" name="unidade" value="{{ form.unidade.value|default_if_none:'' }}">
+        </div>
+
+        <!-- Campo sigla (readonly) -->
+        <div style="margin-top: 15px;">
+            <label for="id_sigla_cliente">Código do Cliente (Sigla):</label><br>
+            <input type="text" id="id_sigla_cliente" readonly>
+        </div>
+
+        <!-- Outros campos do form que queira adicionar aqui -->
+        <!-- Exemplo: se tiver sublocal ou outros, coloque {{ form.sublocal }} -->
+
+        <div style="margin-top: 20px;">
+            <button type="submit">Criar</button>
+        </div>
     </form>
 
     <a href="{% url 'vistorias:listar_vistorias' %}">
         <button type="button" style="margin-top: 10px;">Voltar</button>
     </a>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectCliente = document.getElementById('{{ form.cliente.id_for_label }}');
+    const inputUnidade = document.getElementById('id_unidade');
+    const inputSigla = document.getElementById('id_sigla_cliente');
+
+    function atualizarCamposCliente(clienteId) {
+        if (!clienteId) {
+            inputUnidade.value = '';
+            inputSigla.value = '';
+            return;
+        }
+        fetch("{% url 'vistorias:dados_cliente_ajax' %}?cliente_id=" + clienteId)
+            .then(response => response.json())
+            .then(data => {
+                inputUnidade.value = data.unidade || '';
+                inputSigla.value = data.sigla || '';
+            })
+            .catch(() => {
+                inputUnidade.value = '';
+                inputSigla.value = '';
+            });
+    }
+
+    // Se cliente já selecionado no carregamento da página, preenche campos
+    if (selectCliente.value) {
+        atualizarCamposCliente(selectCliente.value);
+    }
+
+    selectCliente.addEventListener('change', () => {
+        atualizarCamposCliente(selectCliente.value);
+    });
+});
+</script>
 {% endblock %}

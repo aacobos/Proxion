@@ -12,4 +12,5 @@ urlpatterns = [
     path('<int:vistoria_id>/finalizar/', views.finalizar_vistoria, name='finalizar_vistoria'),
     path('<int:pk>/relatorio/', views.gerar_relatorio_vistoria, name='gerar_relatorio'),
     path('<int:vistoria_id>/excluir/', views.excluir_vistoria, name='excluir_vistoria'),
+    path('dados-cliente/', views.dados_cliente_ajax, name='dados_cliente_ajax'),
 ]

@@ -22,6 +22,9 @@ class ParametroEquipamentoForm(forms.ModelForm):
     class Meta:
         model = ParametroEquipamento
         fields = ['nome', 'avaliacao_ajuda']
-        widgets = {
-            'avaliacao_ajuda': forms.Textarea(attrs={'rows': 4}),
-        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['avaliacao_ajuda'].widget.attrs.update({
+            'placeholder': "Descreva como o analista deve avaliar este parâmetro."
+        })

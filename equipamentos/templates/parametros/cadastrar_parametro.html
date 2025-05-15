@@ -15,11 +15,13 @@
 
 {% block content %}
 <div class="form-container">
-    <h2>Dados do Parâmetro</h2>
+    <h2>Cadastar Parâmetro para Vistoria</h2>
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn">Salvar</button>
+
+        <br>
+        <button type="submit" class="btn">Salvar</button>        
         <a href="{% url 'equipamentos:listar_parametros' %}" style="display:block; text-align:center; margin-top:10px;">Voltar</a>
     </form>
 </div>

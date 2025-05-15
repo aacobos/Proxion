@@ -51,6 +51,23 @@ def criar_vistoria(request):
         form = VistoriaForm()
     return render(request, 'vistorias/criar_vistoria.html', {'form': form})
 
+# Criar a view AJAX para retornar os dados do cliente
+from django.http import JsonResponse
+from clientes.models import Cliente
+
+def dados_cliente_ajax(request):
+    cliente_id = request.GET.get('cliente_id')
+    data = {'unidade': '', 'sigla': ''}
+    if cliente_id:
+        try:
+            cliente = Cliente.objects.get(pk=cliente_id)
+            data['unidade'] = cliente.unidade or ''
+            data['sigla'] = cliente.sigla or ''
+        except Cliente.DoesNotExist:
+            pass
+    return JsonResponse(data)
+
+
 
 def excluir_vistoria(request, vistoria_id):
     vistoria = get_object_or_404(Vistoria, id=vistoria_id)

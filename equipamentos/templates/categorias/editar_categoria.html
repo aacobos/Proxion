@@ -1,45 +1,55 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block extrahead %}
-    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
-{% endblock %}
-
-{% block title %}
-    Editar Categoria
-{% endblock %}
+{% block title %}Editar Categoria{% endblock %}
 
 {% block header %}
-    <h1>Editar Categoria</h1>
+<h1>Editar Categoria</h1>
 {% endblock %}
 
 {% block content %}
-<div class="form-container">
+<div class="card-form">
+    <h2>Editar Categoria de Equipamento</h2>
+
     <form method="post">
         {% csrf_token %}
 
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" value="{{ categoria.nome }}" required>
+        <div class="form-group">
+            <label for="nome">Nome da Categoria:</label>
+            <input type="text" id="nome" name="nome" value="{{ categoria.nome }}" required>
+        </div>
 
-        <fieldset>
-            <legend>Parâmetros Personalizados</legend>
-            {% for parametro in parametros %}
-                <div style="margin-bottom: 5px;">
-                    <label>
+        <h4>Parâmetros Associados:</h4>
+        <div class="form-group">
+            <div class="checkbox-grid">
+                {% for parametro in parametros|dictsort:"nome" %}
+                    <label class="checkbox-item {% if parametro in categoria.parametros.all %}selecionado{% endif %}">
                         <input type="checkbox" name="parametros" value="{{ parametro.id }}"
                                {% if parametro in categoria.parametros.all %}checked{% endif %}>
-                        {{ parametro.nome }} ({{ parametro.get_gravidade_display }})
+                        <span class="parametro-nome">{{ parametro.nome }}</span>
                     </label>
-                </div>
-            {% endfor %}
-        </fieldset>
+                {% endfor %}
+            </div>
+        </div>
 
-        <hr>
-        <button type="submit" class="btn">Salvar</button>
-        <hr>
-        <a href="{% url 'equipamentos:listar_categorias' %}">
-            <button type="button" class="btn">Cancelar</button>
-        </a>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="{% url 'equipamentos:listar_categorias' %}" class="btn btn-secondary">Cancelar</a>
+        </div>
     </form>
 </div>
+{% endblock %}
+
+{% block extrajs %}
+<script>
+    // Atualiza visualmente os parâmetros selecionados
+    document.addEventListener('DOMContentLoaded', () => {
+        const checkboxes = document.querySelectorAll('.checkbox-item input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                checkbox.parentElement.classList.toggle('selecionado', checkbox.checked);
+            });
+        });
+    });
+</script>
 {% endblock %}

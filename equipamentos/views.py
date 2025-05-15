@@ -3,22 +3,30 @@ from .models import Equipamento, CategoriaEquipamento, ParametroEquipamento
 from .forms import EquipamentoForm, ParametroEquipamentoForm
 from django.contrib import messages
 
-from django.db.models import Q
+from django.db.models import Q, Max
+from vistorias.models import VistoriaEquipamento
 
 ## ----- EQUIPAMENTOS -----
 # Listar equipamentos
 def listar_equipamentos(request):
     termo_busca = request.GET.get('q', '')
+    
+    equipamentos = Equipamento.objects.all()
+
     if termo_busca:
-        equipamentos = Equipamento.objects.filter(
+        equipamentos = equipamentos.filter(
             Q(nome__icontains=termo_busca) |
             Q(numero_serie__icontains=termo_busca) |
             Q(categoria__nome__icontains=termo_busca) |
             Q(status__icontains=termo_busca) |
             Q(cliente__nome_fantasia__icontains=termo_busca)
         )
-    else:
-        equipamentos = Equipamento.objects.all()
+    
+    # Anotando a data da última vistoria para cada equipamento
+    equipamentos = equipamentos.annotate(
+        ultima_vistoria=Max('vistoriaequipamento__vistoriado_em')
+    )
+    
     return render(request, 'equipamentos/listar_equipamentos.html', {
         'equipamentos': equipamentos,
         'termo_busca': termo_busca
@@ -75,7 +83,6 @@ def listar_categorias(request):
         'categorias': categorias,
         'termo_busca': termo_busca
     })
-
 
 # Cadastrar nova categoria
 def cadastrar_categoria(request):
