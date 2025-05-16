@@ -39,7 +39,7 @@
             <tr>
                 <th>Cliente</th>
                 <th>Data da Vistoria</th>
-                <th>Quantidade de Equipamentos</th>
+                <th>Equipamentos Vistoriados</th>
                 <th>Status</th>
                 <th>Usuário</th>
                 <th>Ações</th>
@@ -55,9 +55,13 @@
                 <td>{{ vistoria.realizada_por }}</td>
                 <td class="table-actions">
                     <a href="{% url 'vistorias:detalhes_vistoria' vistoria.id %}">Detalhes</a>
+                    
                     {% if vistoria.status == 'finalizada' %}
-                    | <a href="{% url 'vistorias:gerar_relatorio' vistoria.id %}" target="_blank">Relatório</a>
+                        | <a href="{% url 'vistorias:gerar_relatorio' vistoria.id %}">Relatório</a>
+                    {% else %}
+                        | <a href="{% url 'vistorias:equipamentos_para_vistoria' vistoria.id %}">Continuar</a>
                     {% endif %}
+                    
                     <form method="POST" action="{% url 'vistorias:excluir_vistoria' vistoria.id %}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir esta vistoria?');">
                         {% csrf_token %}
                         <button type="submit">Excluir</button>

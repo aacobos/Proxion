@@ -14,6 +14,8 @@ from django.conf import settings
 
 from django.db.models import Count
 
+from collections import Counter
+
 from django.db.models import Q
 
 def listar_vistorias(request):
@@ -21,7 +23,7 @@ def listar_vistorias(request):
 
     vistorias = Vistoria.objects.annotate(
         qtd_equipamentos=Count('equipamentos_vistoriados')
-    )
+    ).order_by('-data', '-criado_em')
 
     if termo:
         vistorias = vistorias.filter(
@@ -55,6 +57,7 @@ def criar_vistoria(request):
 from django.http import JsonResponse
 from clientes.models import Cliente
 
+
 def dados_cliente_ajax(request):
     cliente_id = request.GET.get('cliente_id')
     data = {'unidade': '', 'sigla': ''}
@@ -66,7 +69,6 @@ def dados_cliente_ajax(request):
         except Cliente.DoesNotExist:
             pass
     return JsonResponse(data)
-
 
 
 def excluir_vistoria(request, vistoria_id):
@@ -174,12 +176,81 @@ def finalizar_vistoria(request, vistoria_id):
     messages.success(request, 'Vistoria finalizada com sucesso.')
     return redirect('vistorias:listar_vistorias')
 
+
+from django.shortcuts import render, get_object_or_404
+from collections import Counter
+from .models import Vistoria, VistoriaEquipamento, AvaliacaoParametro
+
+from collections import Counter
+from django.db.models import Q
+
 def detalhes_vistoria(request, vistoria_id):
     vistoria = get_object_or_404(Vistoria, id=vistoria_id)
-    equipamentos = vistoria.equipamentos_vistoriados.all()
+
+    termo_busca = request.GET.get('q', '')
+
+    equipamentos = vistoria.equipamentos_vistoriados.select_related(
+        'equipamento__categoria'
+    ).prefetch_related('avaliacoes', 'avaliacoes__parametro')
+
+    # Filtro por nome, categoria, número de série ou status
+    if termo_busca:
+        equipamentos = equipamentos.filter(
+            Q(equipamento__nome__icontains=termo_busca) |
+            Q(equipamento__categoria__nome__icontains=termo_busca) |
+            Q(equipamento__numero_serie__icontains=termo_busca) |
+            Q(status_final__icontains=termo_busca)
+        )
+
+    # Ordenação por nome do equipamento
+    equipamentos = sorted(equipamentos, key=lambda x: x.equipamento.nome.lower())
+
+    # Contadores para gráfico geral
+    status_counter = Counter()
+    gravidade_counter = Counter()
+
+    # Contador para parâmetros danificados gravemente
+    parametros_graves_counter = Counter()
+
+    for eq in equipamentos:
+        status = eq.status_final
+        if status == 'danificado':
+            for av in eq.avaliacoes.all():
+                if av.situacao == 'danificado':
+                    if av.gravidade:
+                        gravidade_counter[av.gravidade] += 1
+                        if av.gravidade == 'grave':
+                            parametros_graves_counter[av.parametro.nome] += 1
+        else:
+            status_counter[status] += 1
+
+    # Dados do gráfico de pizza (visão geral)
+    grafico_labels = [
+        'Em Produção', 'Disponível', 'Em Manutenção',
+        'Danificado - Leve', 'Danificado - Médio', 'Danificado - Grave',
+    ]
+    grafico_dados = [
+        status_counter.get('em_producao', 0),
+        status_counter.get('disponivel', 0),
+        status_counter.get('em_manutencao', 0),
+        gravidade_counter.get('leve', 0),
+        gravidade_counter.get('medio', 0),
+        gravidade_counter.get('grave', 0),
+    ]
+
+    # Preparar dados para gráfico de barras (10 parâmetros graves principais)
+    parametros_graves_ordenados = parametros_graves_counter.most_common(10)
+    parametros_graves_labels = [p[0] for p in parametros_graves_ordenados]
+    parametros_graves_dados = [p[1] for p in parametros_graves_ordenados]
+
     return render(request, 'vistorias/detalhes_vistoria.html', {
         'vistoria': vistoria,
-        'equipamentos': equipamentos
+        'equipamentos': equipamentos,
+        'grafico_labels': grafico_labels,
+        'grafico_dados': grafico_dados,
+        'termo_busca': termo_busca,
+        'parametros_graves_labels': parametros_graves_labels,
+        'parametros_graves_dados': parametros_graves_dados,
     })
 
 # Gerar Relatório

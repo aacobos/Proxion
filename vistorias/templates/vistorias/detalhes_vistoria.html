@@ -1,53 +1,185 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block extrahead %}
-    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
-{% endblock %}
-
-{% block title %}
-    Detalhes da Vistoria
-{% endblock %}
+{% block title %}Detalhes da Vistoria{% endblock %}
 
 {% block header %}
-    <h1>Detalhes da Vistoria</h1>
+<h1>Detalhes da Vistoria</h1>
 {% endblock %}
 
 {% block content %}
-<div class="form-container">
-    <p><strong>Cliente:</strong> {{ vistoria.cliente }}</p>
+<br>
+<div class="card-form">
+    <h2>Dados da Vistoria</h2>
+    <p><strong>Cliente:</strong> {{ vistoria.cliente.nome_fantasia }}</p>
+    <p><strong>Código do Cliente:</strong> {{ vistoria.cliente.sigla|default:"-" }}</p>
     <p><strong>Unidade:</strong> {{ vistoria.unidade }}</p>
     <p><strong>Status:</strong> {{ vistoria.get_status_display }}</p>
-    <p><strong>Horário:</strong> {{ vistoria.horario_inicio }} - {{ vistoria.horario_fim }}</p>
+    <p><strong>Data:</strong> {{ vistoria.data|date:"d/m/Y" }}</p>
+    <p><strong>Início:</strong> {{ vistoria.horario_inicio }}</p>
+    <p><strong>Término:</strong> {{ vistoria.horario_fim|default:"-" }}</p>
+    <p><strong>Analista:</strong> {{ vistoria.realizada_por.nome_completo|default:"-" }}</p>
+</div>
 
-    <h2>Equipamentos Vistoriados</h2>
-    <ul>
-        {% for item in equipamentos %}
-            <li>
-                <strong>{{ item.equipamento.nome }}</strong> - {{ item.get_status_final_display }}
-                <ul>
-                    {% for avaliacao in item.avaliacoes.all %}
+<br>
+<div class="card-form">
+    <h2>Visão Geral</h2>
+    <div class="chart-legend">
+        <div class="chart-legend-item"><div class="chart-legend-color" style="background-color:#27c2c2;"></div>Em Produção</div>
+        <div class="chart-legend-item"><div class="chart-legend-color" style="background-color:#555;"></div>Disponível</div>
+        <div class="chart-legend-item"><div class="chart-legend-color" style="background-color:#385e82;"></div>Em Manutenção</div>
+        <div class="chart-legend-item"><div class="chart-legend-color" style="background-color:orange;"></div>Danificado - Leve</div>
+        <div class="chart-legend-item"><div class="chart-legend-color" style="background-color:red;"></div>Danificado - Médio</div>
+        <div class="chart-legend-item"><div class="chart-legend-color" style="background-color:#660000;"></div>Danificado - Grave</div>
+    </div>
+
+    <div style="max-width: 400px; margin: 0 auto;">
+        <canvas id="graficoVistoriaPizza"></canvas>
+    </div>
+</div>
+
+<br>
+
+<div class="card-form">
+    <h2>Parâmetros Danificados - Gravidade Grave (Top 10)</h2>
+    <div style="max-width: 700px; margin: 0 auto;">
+        <canvas id="graficoParametrosGraves"></canvas>
+    </div>
+</div>
+
+<br>
+
+<!-- FILTRO DE BUSCA -->
+<div class="card-form">
+    <div class="top-bar" style="margin: 0;">
+        <div class="left-actions">
+            <h2 style="margin: 0;">Equipamentos Vistoriados</h2>
+        </div>
+
+        <form method="get" action="" class="center-search">
+            <input type="text" name="q" value="{{ termo_busca|default:'' }}" placeholder="Buscar por nome, categoria, número de série ou status">
+            <button type="submit" class="btn">Buscar</button>
+        </form>
+    </div>
+</div>
+
+<!-- TABELA -->
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Categoria</th>
+                <th>Nº de Série</th>
+                <th>Status Final</th>
+                <th>Parâmetros Avaliados</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in equipamentos %}
+            <tr>
+                <td>{{ item.equipamento.nome }}</td>
+                <td>{{ item.equipamento.categoria.nome|default:"-" }}</td>
+                <td>{{ item.equipamento.numero_serie }}</td>
+                <td>{{ item.get_status_final_display }}</td>
+                <td>
+                    <ul style="text-align: left;">
+                        {% for avaliacao in item.avaliacoes.all %}
                         <li>
-                            {{ avaliacao.parametro.nome }}:
+                            <strong>{{ avaliacao.parametro.nome }}</strong>:
                             {{ avaliacao.get_situacao_display }}
-                            {% if avaliacao.situacao == "danificado" and avaliacao.gravidade %}
-                                - Gravidade: {{ avaliacao.get_gravidade_display }}
+                            {% if avaliacao.situacao == "danificado" and avaliacao.gravidade %} -
+                                Gravidade: {{ avaliacao.get_gravidade_display }}
                             {% endif %}
-                            {% if avaliacao.observacoes %}
-                                - {{ avaliacao.observacoes }}
+                            {% if avaliacao.observacoes %} -
+                                {{ avaliacao.observacoes }}
                             {% endif %}
                         </li>
-                    {% endfor %}
-                </ul>
-            </li>
-        {% endfor %}
-    </ul>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Nenhum equipamento vistoriado encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="form-actions" style="text-align: center;">
     <a href="{% url 'vistorias:gerar_relatorio' vistoria.id %}" target="_blank" class="btn btn-primary">
         <i class="fas fa-file-pdf"></i> Gerar Relatório PDF
     </a>
-
-    <a href="{% url 'vistorias:listar_vistorias' %}">
-        <button type="button">Voltar</button>
-    </a>
+    <a href="{% url 'vistorias:listar_vistorias' %}" class="btn btn-secondary">Voltar</a>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Gráfico Pizza - Visão Geral
+    const ctxPizza = document.getElementById('graficoVistoriaPizza').getContext('2d');
+    new Chart(ctxPizza, {
+        type: 'pie',
+        data: {
+            labels: {{ grafico_labels|safe }},
+            datasets: [{
+                data: {{ grafico_dados|safe }},
+                backgroundColor: ['#27c2c2','#555','#385e82','orange','red','#660000'],
+                borderColor: '#fff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.parsed} equipamento(s)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Gráfico Barras - Parâmetros Danificados Gravidade Grave (Top 10)
+    const ctxBar = document.getElementById('graficoParametrosGraves').getContext('2d');
+    new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+            labels: {{ parametros_graves_labels|safe }},
+            datasets: [{
+                label: 'Quantidade de Ocorrências',
+                data: {{ parametros_graves_dados|safe }},
+                backgroundColor: 'rgba(102, 0, 0, 0.7)',
+                borderColor: 'rgba(102, 0, 0, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    precision: 0,
+                    stepSize: 1
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.parsed.x} ocorrência(s)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}

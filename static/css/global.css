@@ -502,6 +502,10 @@ button:hover {
     color: var(--primary-color);
 }
 
+.card-form p{
+    margin-bottom: 10px;
+}
+
 .form-group {
     margin-bottom: 20px;
 }
@@ -549,3 +553,30 @@ button:hover {
     justify-content: center;
     margin-top: 20px;
 }
+
+
+/* ======= LEGENDA PARA GRÁFICOS ======= */
+.section-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+.chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chart-legend-color {
+    width: 25px;
+    height: 5px;
+}
+
+
