@@ -332,6 +332,33 @@ button:hover {
     color: white;
 }
 
+
+/* === BOTÕES PADRÃO === */
+.btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.btn:hover {
+    background-color: var(--secondary-color);
+}
+
+.btn-secondary {
+    background-color: #888;
+}
+
+.btn-secondary:hover {
+    background-color: #666;
+}
+
 /* === TOPO DE AÇÕES E PESQUISA === */
 .top-bar {
     display: flex;
@@ -371,34 +398,18 @@ button:hover {
     min-width: 500px;
     max-width: 600px;
     font-size: 14px;
-    height: 42px; /* mesma altura dos botões */
+    height: 42px;
 }
 
-
-/* === BOTÕES PADRÃO === */
-.btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 10px 16px;
+.readonly-box {
+    background-color: var(--subcard-background);
+    border: 1px solid #ccc;
     border-radius: 6px;
-    cursor: pointer;
+    padding: 10px;
+    min-height: 60px;
     font-size: 14px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-    white-space: nowrap;
-}
-
-.btn:hover {
-    background-color: var(--secondary-color);
-}
-
-.btn-secondary {
-    background-color: #888;
-}
-
-.btn-secondary:hover {
-    background-color: #666;
+    white-space: pre-wrap;
+    color: var(--text-color);
 }
 
 

@@ -17,23 +17,25 @@
 <div class="form-container">
     <h2>Informações do Parâmetro</h2>
 
-    <label>Nome:</label>
-    <input type="text" value="{{ parametro.nome }}" readonly>
+    <div class="form-group">
+        <label for="nome"><strong>Nome do Parâmetro:</strong></label>
+        <input type="text" id="nome" value="{{ parametro.nome }}" readonly>
+    </div>
 
-    <label>Como Avaliar:</label>
-    <textarea readonly>{{ parametro.avaliacao_ajuda }}</textarea>
+    <div class="form-group">
+        <label><strong>Como Avaliar:</strong></label>
+        <div class="readonly-box">{{ parametro.avaliacao_ajuda|default:"-" }}</div>
+    </div>
 
-    <a href="{% url 'equipamentos:editar_parametro' parametro.pk %}">
-        <button type="button">Editar</button>
-    </a>
+    <div class="form-actions">
+        <a href="{% url 'equipamentos:editar_parametro' parametro.pk %}" class="btn">Editar</a>
 
-    <form method="POST" action="{% url 'equipamentos:excluir_parametro' parametro.pk %}" style="margin-top: 10px;">
-        {% csrf_token %}
-        <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este parâmetro?');" style="background-color: #e74c3c;">Excluir</button>
-    </form>
+        <form method="POST" action="{% url 'equipamentos:excluir_parametro' parametro.pk %}" onsubmit="return confirm('Tem certeza que deseja excluir este parâmetro?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary" style="background-color: #e74c3c;">Excluir</button>
+        </form>
 
-    <a href="{% url 'equipamentos:listar_parametros' %}">
-        <button type="button" style="margin-top: 10px;">Voltar</button>
-    </a>
+        <a href="{% url 'equipamentos:listar_parametros' %}" class="btn btn-secondary">Voltar</a>
+    </div>
 </div>
 {% endblock %}

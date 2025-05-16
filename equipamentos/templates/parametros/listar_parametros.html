@@ -8,16 +8,13 @@
 
 {% block content %}
 <br>
-<h2>Lista de Parâmetros</h2>
-
-<!-- AÇÕES E PESQUISA -->
+<h2>Parâmetros Cadastrados</h2>
+<!-- TOPO COM AÇÕES -->
 <div class="top-bar">
-    <!-- Botão à esquerda -->
     <div class="left-actions">
         <a href="{% url 'equipamentos:cadastrar_parametro' %}" class="btn">Cadastrar Parâmetro</a>
     </div>
 
-    <!-- Pesquisa no centro -->
     <form method="get" action="{% url 'equipamentos:listar_parametros' %}" class="center-search">
         <input
             type="text"
@@ -28,27 +25,30 @@
         <button type="submit" class="btn">Buscar</button>
     </form>
 
-    <!-- Botão à direita -->
     <div class="right-actions">
         <a href="{% url 'core:dashboard' %}" class="btn btn-secondary">Voltar</a>
     </div>
 </div>
 
-<!-- TABELA BONITA -->
+<!-- TABELA DE PARÂMETROS -->
 <div class="table-wrapper">
     <table>
         <thead>
             <tr>
                 <th>Nome</th>
-                <th>O que avaliar</th>
+                <th>Como Avaliar</th>
                 <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             {% for parametro in parametros %}
             <tr>
-                <td><a href="{% url 'equipamentos:detalhes_parametro' parametro.id %}">{{ parametro.nome }}</a></td>
-                <td>{{ parametro.avaliacao_ajuda }}</td>
+                <td>
+                    <a href="{% url 'equipamentos:detalhes_parametro' parametro.id %}">
+                        {{ parametro.nome }}
+                    </a>
+                </td>
+                <td>{{ parametro.avaliacao_ajuda|default:"—" }}</td>
                 <td class="table-actions">
                     <a href="{% url 'equipamentos:editar_parametro' parametro.id %}">Editar</a>
                     <form method="POST" action="{% url 'equipamentos:excluir_parametro' parametro.id %}" onsubmit="return confirm('Tem certeza que deseja excluir este parâmetro?');">
@@ -59,7 +59,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="3">Nenhum parâmetro cadastrado.</td>
+                <td colspan="3">Nenhum parâmetro encontrado.</td>
             </tr>
             {% endfor %}
         </tbody>

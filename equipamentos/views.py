@@ -11,7 +11,7 @@ from vistorias.models import VistoriaEquipamento
 def listar_equipamentos(request):
     termo_busca = request.GET.get('q', '')
     
-    equipamentos = Equipamento.objects.all()
+    equipamentos = Equipamento.objects.all().order_by('nome')
 
     if termo_busca:
         equipamentos = equipamentos.filter(
@@ -20,7 +20,7 @@ def listar_equipamentos(request):
             Q(categoria__nome__icontains=termo_busca) |
             Q(status__icontains=termo_busca) |
             Q(cliente__nome_fantasia__icontains=termo_busca)
-        )
+        ).order_by('nome')
     
     # Anotando a data da última vistoria para cada equipamento
     equipamentos = equipamentos.annotate(
@@ -76,9 +76,9 @@ def excluir_equipamento(request, pk):
 def listar_categorias(request):
     termo_busca = request.GET.get('q', '')
     if termo_busca:
-        categorias = CategoriaEquipamento.objects.filter(nome__icontains=termo_busca)
+        categorias = CategoriaEquipamento.objects.filter(nome__icontains=termo_busca).order_by('nome')
     else:
-        categorias = CategoriaEquipamento.objects.all()
+        categorias = CategoriaEquipamento.objects.all().order_by('nome')
     return render(request, 'categorias/listar_categorias.html', {
         'categorias': categorias,
         'termo_busca': termo_busca
@@ -147,9 +147,10 @@ def excluir_categoria(request, pk):
 def listar_parametros(request):
     termo_busca = request.GET.get('q', '')
     if termo_busca:
-        parametros = ParametroEquipamento.objects.filter(nome__icontains=termo_busca)
+        parametros = ParametroEquipamento.objects.filter(nome__icontains=termo_busca).order_by('nome')
     else:
-        parametros = ParametroEquipamento.objects.all()
+        parametros = ParametroEquipamento.objects.all().order_by('nome')
+
     return render(request, 'parametros/listar_parametros.html', {
         'parametros': parametros,
         'termo_busca': termo_busca

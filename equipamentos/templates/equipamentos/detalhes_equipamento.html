@@ -81,30 +81,30 @@
     <input type="text" value="{{ equipamento.alterado_por }}" readonly>
 
     <label>Data da Última Alteração:</label>
-    <input type="text" value="{{ equipamento.alterado_em|date:'d/m/Y H:i' }}" readonly>
+    <input type="text" value="{{ equipamento.alterado_em|date:'d/m/Y' }}" readonly>
 
     <label>Parâmetros da Categoria:</label>
     {% if equipamento.categoria and equipamento.categoria.parametros.all %}
-        <ul>
-        {% for parametro in equipamento.categoria.parametros.all %}
-            <li>{{ parametro.nome }} ({{ parametro.get_gravidade_display }})</li>
-        {% endfor %}
+        <ul style="margin-top: 10px; margin-left: 20px;">
+            {% for parametro in equipamento.categoria.parametros.all %}
+                <li>
+                    <strong>{{ parametro.nome }}</strong>
+                    {% if parametro.get_gravidade_display %} ({{ parametro.get_gravidade_display }}){% endif %}
+                </li>
+            {% endfor %}
         </ul>
     {% else %}
-        <p>Nenhum parâmetro definido para esta categoria.</p>
-{% endif %}
-
-    <a href="{% url 'equipamentos:editar_equipamento' equipamento.pk %}">
-        <button type="button">Editar</button>
-    </a>
-
-    <form method="POST" action="{% url 'equipamentos:excluir_equipamento' equipamento.pk %}" style="margin-top: 10px;">
-        {% csrf_token %}
-        <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este equipamento?');" style="background-color: #e74c3c;">Excluir</button>
-    </form>
-
-    <a href="{% url 'equipamentos:listar_equipamentos' %}">
-        <button type="button" style="margin-top: 10px;">Voltar</button>
-    </a>
+        <p style="margin-top: 5px; color: var(--text-secondary);">Nenhum parâmetro definido para esta categoria.</p>
+    {% endif %}
+    
+    <br><hr>
+    <div class="form-actions">
+        <a href="{% url 'equipamentos:editar_equipamento' equipamento.pk %}" class="btn">Editar</a>
+        <form method="POST" action="{% url 'equipamentos:excluir_equipamento' equipamento.pk %}" style="display:inline;" onsubmit="return confirm('Tem certeza que deseja excluir este equipamento?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary" style="background-color: #e74c3c;">Excluir</button>
+        </form>
+        <a href="{% url 'equipamentos:listar_equipamentos' %}" class="btn btn-secondary">Voltar</a>
+    </div>
 </div>
 {% endblock %}
