@@ -1,51 +1,47 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block extrahead %}
-    <link rel="stylesheet" href="{% static 'css/usuario.css' %}">
-{% endblock %}
-
-{% block title %}
-    Avaliação de Equipamento
-{% endblock %}
+{% block title %}Avaliação de Equipamento{% endblock %}
 
 {% block header %}
-    <h1>Vistoria de {{ equipamento.nome }}</h1>
+<h1>Avaliação de Equipamento</h1>
 {% endblock %}
 
 {% block content %}
-<div class="form-container">
+<br>
+<div class="card-form">
+    <h2 style="text-align: center;">Vistoria do Equipamento</h2>
+
+    <p><strong>Equipamento:</strong> {{ equipamento.nome }}</p>
+    <p><strong>Nº de Série:</strong> {{ equipamento.numero_serie }}</p><br>
+
     <form method="post" id="form-vistoria">
         {% csrf_token %}
-        <label>Status Final:</label>
-        <select name="status_final" required>
-            {% for valor, nome in status_choices %}
-                <option value="{{ valor }}">{{ nome }}</option>
-            {% endfor %}
-        </select>
 
-        <label>Observações Gerais:</label>
-        <textarea name="observacoes"></textarea>
+        <!-- Parâmetros -->
+        <h3 style="margin-bottom: 15px; color: var(--primary-color);">Parâmetros</h3>
 
-        <h3>Parâmetros</h3>
         {% for parametro in parametros %}
-        <fieldset>
-            <legend>{{ parametro.nome }}</legend>
+        <fieldset style="margin-bottom: 25px; padding: 20px; border: 1px solid #ccc; border-radius: 8px;">
+            <legend style="font-weight: bold; padding: 0 10px;">{{ parametro.nome }}</legend>
 
-            {% for valor, nome in situacao_choices %}
-                <label>
-                    <input type="radio"
-                           name="parametro_{{ parametro.id }}"
-                           value="{{ valor }}"
-                           required
-                           class="situacao-radio"
-                           data-param-id="{{ parametro.id }}">
-                    {{ nome }}
+            <div class="form-group">
+                {% for valor, nome in situacao_choices %}
+                <label style="margin-right: 15px;">
+                    <input
+                        type="radio"
+                        name="parametro_{{ parametro.id }}"
+                        value="{{ valor }}"
+                        required
+                        class="situacao-radio"
+                        data-param-id="{{ parametro.id }}"
+                    > {{ nome }}
                 </label>
-            {% endfor %}
+                {% endfor %}
+            </div>
 
-            <div class="gravidade-container" id="gravidade-{{ parametro.id }}" style="display: none; margin-top: 8px;">
-                <label>Gravidade:</label><br>
+            <div class="form-group gravidade-container" id="gravidade-{{ parametro.id }}" style="display: none;">
+                <label for="gravidade_{{ parametro.id }}">Gravidade:</label>
                 <select name="gravidade_{{ parametro.id }}">
                     <option value="">Selecione...</option>
                     <option value="leve">Leve</option>
@@ -54,25 +50,42 @@
                 </select>
             </div>
 
-            <textarea name="observacao_{{ parametro.id }}" placeholder="Observações..."></textarea>
+            <div class="form-group">
+                <label for="observacao_{{ parametro.id }}">Observações:</label>
+                <textarea name="observacao_{{ parametro.id }}" rows="2" placeholder="Observações específicas..."></textarea>
+            </div>
         </fieldset>
         {% endfor %}
 
-        <button type="submit">Salvar</button>
-    </form>
+        <!-- Status Final -->
+        <hr><br>
+        <div class="form-group">
+                    <!-- Observações Gerais -->
+            <div class="form-group">
+                <label for="observacoes">Observações Gerais:</label>
+                <textarea name="observacoes" id="observacoes" rows="3" placeholder="Digite observações gerais..."></textarea>
+            </div>
+            <label for="status_final">Status Final:</label>
+            <select name="status_final" id="status_final" required>
+                {% for valor, nome in status_choices %}
+                <option value="{{ valor }}">{{ nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <!-- Botão de voltar fora do form -->
-    <div style="margin-top: 10px;">
-        <a href="{% url 'vistorias:equipamentos_para_vistoria' vistoria.id %}">
-            <button type="button">Voltar</button>
-        </a>
-    </div>
+        <!-- Botões -->
+        <div class="form-actions">
+            <button type="submit" class="btn">Salvar</button>
+            <a href="{% url 'vistorias:equipamentos_para_vistoria' vistoria.id %}" class="btn btn-secondary">Voltar</a>
+        </div>
+    </form>
 </div>
 
+<!-- Script para exibir gravidade -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.situacao-radio').forEach(function(radio) {
-            radio.addEventListener('change', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.situacao-radio').forEach(function (radio) {
+            radio.addEventListener('change', function () {
                 const paramId = this.dataset.paramId;
                 const container = document.getElementById('gravidade-' + paramId);
                 if (this.value === 'danificado') {
@@ -83,7 +96,7 @@
                 }
             });
 
-            // Mostrar a gravidade se já estiver selecionada como danificado ao recarregar a página
+            // Mostrar gravidade se já estiver marcado como danificado
             if (radio.checked && radio.value === 'danificado') {
                 document.getElementById('gravidade-' + radio.dataset.paramId).style.display = 'block';
             }

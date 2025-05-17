@@ -84,6 +84,8 @@ def excluir_vistoria(request, vistoria_id):
 
 def equipamentos_para_vistoria(request, vistoria_id):
     vistoria = get_object_or_404(Vistoria, id=vistoria_id)
+    termo_busca = request.GET.get("q", "").strip().lower()
+
     equipamentos_base = Equipamento.objects.filter(cliente=vistoria.cliente)
 
     # Verifica se deve ocultar os já avaliados
@@ -105,16 +107,30 @@ def equipamentos_para_vistoria(request, vistoria_id):
             .order_by('-id').values_list('vistoria__data', flat=True).first()
         )
 
+        status_avaliado = 'avaliado' if vistoria_equipamento else 'pendente'
+
         equipamentos_data.append({
             'id': equipamento.id,
             'nome': equipamento.nome,
+            'numero_serie': equipamento.numero_serie,
             'avaliado': vistoria_equipamento is not None,
+            'status_avaliado': status_avaliado,
             'data_ultima_vistoria': data_ultima_vistoria,
         })
+
+    # Filtro de busca no nome, número de série ou status de avaliação
+    if termo_busca:
+        equipamentos_data = [
+            e for e in equipamentos_data
+            if termo_busca in (e['nome'] or '').lower()
+            or termo_busca in (e.get('numero_serie') or '').lower()
+            or termo_busca in e['status_avaliado']
+        ]
 
     return render(request, 'vistorias/equipamentos_para_vistoria.html', {
         'vistoria': vistoria,
         'equipamentos': equipamentos_data,
+        'termo_busca': termo_busca,
     })
 
 

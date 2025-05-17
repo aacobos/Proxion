@@ -55,6 +55,18 @@ select {
     border-color: var(--text-secondary);
 }
 
+textarea {
+    background-color: var(--card-background);
+    color: var(--text-color);
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 14px;
+    width: 100%;
+    resize: vertical;
+    min-height: 60px;
+}
+
 .equipment-item,
 .service-item {
     background-color: var(--background-color);
@@ -478,6 +490,7 @@ button:hover {
     align-items: center;
     justify-content: center;
 }
+
 
 /* Responsividade para telas pequenas */
 @media (max-width: 768px) {
