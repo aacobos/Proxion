@@ -50,7 +50,7 @@
             <tr>
                 <td>{{ vistoria.cliente }}</td>
                 <td>{{ vistoria.data|date:"d/m/Y" }}</td>
-                <td>{{ vistoria.qtd_equipamentos }}</td>
+                <td>{{ vistoria.qtd_equipamentos }}/{{ vistoria.qtd_cadastrados }}</td>
                 <td>{{ vistoria.get_status_display }}</td>
                 <td>{{ vistoria.realizada_por }}</td>
                 <td class="table-actions">

@@ -22,7 +22,7 @@ def listar_vistorias(request):
     termo = request.GET.get('q', '').strip()
 
     vistorias = Vistoria.objects.annotate(
-        qtd_equipamentos=Count('equipamentos_vistoriados')
+        qtd_equipamentos=Count('equipamentos_vistoriados')  # já vistoriados
     ).order_by('-data', '-criado_em')
 
     if termo:
@@ -34,8 +34,15 @@ def listar_vistorias(request):
             Q(realizada_por__nome_completo__icontains=termo)
         )
 
+    # Novo passo: contar equipamentos cadastrados por cliente
+    vistoria_com_dados = []
+    for vistoria in vistorias:
+        total_cadastrados = Equipamento.objects.filter(cliente=vistoria.cliente).count()
+        vistoria.qtd_cadastrados = total_cadastrados
+        vistoria_com_dados.append(vistoria)
+
     return render(request, 'vistorias/listar_vistorias.html', {
-        'vistorias': vistorias,
+        'vistorias': vistoria_com_dados,
         'termo_busca': termo,
     })
 
@@ -88,13 +95,6 @@ def equipamentos_para_vistoria(request, vistoria_id):
 
     equipamentos_base = Equipamento.objects.filter(cliente=vistoria.cliente)
 
-    # Verifica se deve ocultar os já avaliados
-    if request.GET.get("ver_todos") != "1":
-        vistoriados_ids = VistoriaEquipamento.objects.filter(
-            vistoria=vistoria
-        ).values_list('equipamento_id', flat=True)
-        equipamentos_base = equipamentos_base.exclude(id__in=vistoriados_ids)
-
     equipamentos_data = []
 
     for equipamento in equipamentos_base:
@@ -117,6 +117,21 @@ def equipamentos_para_vistoria(request, vistoria_id):
             'status_avaliado': status_avaliado,
             'data_ultima_vistoria': data_ultima_vistoria,
         })
+
+    # Filtro por nome, número de série ou status de avaliação
+    if termo_busca:
+        equipamentos_data = [
+            e for e in equipamentos_data
+            if termo_busca in (e['nome'] or '').lower()
+            or termo_busca in (e['numero_serie'] or '').lower()
+            or termo_busca in e['status_avaliado']
+        ]
+
+    return render(request, 'vistorias/equipamentos_para_vistoria.html', {
+        'vistoria': vistoria,
+        'equipamentos': equipamentos_data,
+        'termo_busca': termo_busca,
+    })
 
     # Filtro de busca no nome, número de série ou status de avaliação
     if termo_busca:
@@ -279,15 +294,53 @@ def agrupar_em(lista, tamanho):
 def gerar_relatorio_vistoria(request, pk):
     vistoria = get_object_or_404(Vistoria, pk=pk)
 
-    # Pegando os equipamentos relacionados corretamente
     equipamentos = list(vistoria.equipamentos_vistoriados.select_related(
         'equipamento', 'equipamento__categoria'
     ).prefetch_related('avaliacoes', 'avaliacoes__parametro'))
 
-    # Agrupar os equipamentos em blocos de até 15
-    grupos_equipamentos = agrupar_em(equipamentos, 15)
+    # Gráficos
+    status_counter = Counter()
+    gravidade_counter = Counter()
+    parametros_graves_counter = Counter()
+
+    for eq in equipamentos:
+        status = eq.status_final
+        if status == 'danificado':
+            for av in eq.avaliacoes.all():
+                if av.situacao == 'danificado' and av.gravidade:
+                    gravidade_counter[av.gravidade] += 1
+                    if av.gravidade == 'grave':
+                        parametros_graves_counter[av.parametro.nome] += 1
+        else:
+            status_counter[status] += 1
+
+    grafico_labels = [
+        'Em Produção', 'Disponível', 'Em Manutenção',
+        'Danificado - Leve', 'Danificado - Médio', 'Danificado - Grave',
+    ]
+    grafico_dados = [
+        status_counter.get('em_producao', 0),
+        status_counter.get('disponivel', 0),
+        status_counter.get('em_manutencao', 0),
+        gravidade_counter.get('leve', 0),
+        gravidade_counter.get('medio', 0),
+        gravidade_counter.get('grave', 0),
+    ]
+
+    parametros_graves_ordenados = parametros_graves_counter.most_common(10)
+    parametros_graves_labels = [p[0] for p in parametros_graves_ordenados]
+    parametros_graves_dados = [p[1] for p in parametros_graves_ordenados]
+
+    analista = vistoria.realizada_por  # objeto Usuario
 
     return render(request, 'vistorias/relatorio_vistoria.html', {
         'vistoria': vistoria,
-        'grupos_equipamentos': grupos_equipamentos,
+        'equipamentos': equipamentos,
+        'grafico_labels': grafico_labels,
+        'grafico_dados': grafico_dados,
+        'parametros_graves_labels': parametros_graves_labels,
+        'parametros_graves_dados': parametros_graves_dados,
+        'analista_nome': analista.nome_completo if analista else '',
+        'analista_assinatura': analista.assinatura.url if analista and analista.assinatura else '',
     })
+
